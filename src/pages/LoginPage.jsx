@@ -45,6 +45,7 @@ export default function LoginPage() {
             localStorage.setItem('refreshToken', data.refreshToken);
             localStorage.setItem('correo', data.correo);
             localStorage.setItem('rol', data.rol);
+            localStorage.setItem('nombre', data.nombre);
 
             // Redirect based on role
             if (data.rol === 'INTERESADO') {

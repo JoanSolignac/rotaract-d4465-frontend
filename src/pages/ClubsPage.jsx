@@ -1,12 +1,10 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Card, Spinner, TextInput, Select, Button } from 'flowbite-react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { HiSearch, HiFilter, HiLocationMarker, HiCalendar } from 'react-icons/hi';
 import AppNavbar from '../components/Navbar';
 
-/**
- * ClubsPage Component
- * Complete page displaying all clubs from District 4465
- */
 export default function ClubsPage() {
     const [clubs, setClubs] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -28,7 +26,6 @@ export default function ClubsPage() {
 
                 const data = await response.json();
 
-                // API returns: { content: [...], totalElements, totalPages }
                 if (data.content && Array.isArray(data.content)) {
                     setClubs(data.content);
                 } else {
@@ -45,20 +42,16 @@ export default function ClubsPage() {
         fetchClubs();
     }, []);
 
-    // Get unique departments for filter dropdown
     const departments = useMemo(() => {
         const uniqueDepts = [...new Set(clubs.map(club => club.departamento))];
         return uniqueDepts.sort();
     }, [clubs]);
 
-    // Filter clubs based on search query and selected department
     const filteredClubs = useMemo(() => {
         return clubs.filter(club => {
-            // Filter by search query (name)
             const matchesSearch = searchQuery.trim() === '' ||
                 club.nombre.toLowerCase().includes(searchQuery.toLowerCase());
 
-            // Filter by department
             const matchesDepartment = selectedDepartment === '' ||
                 club.departamento === selectedDepartment;
 
@@ -66,95 +59,113 @@ export default function ClubsPage() {
         });
     }, [clubs, searchQuery, selectedDepartment]);
 
-    // Clear all filters
     const clearFilters = () => {
         setSearchQuery('');
         setSelectedDepartment('');
     };
 
+    // Animation variants
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.1
+            }
+        }
+    };
+
+    const itemVariants = {
+        hidden: { opacity: 0, y: 20 },
+        visible: {
+            opacity: 1,
+            y: 0,
+            transition: { duration: 0.5 }
+        }
+    };
+
     return (
-        <div className="min-h-screen flex flex-col bg-white">
-            {/* Navigation */}
+        <div className="min-h-screen flex flex-col bg-[#050506]">
             <AppNavbar />
 
             {/* Hero Section */}
-            <section className="bg-gradient-to-r from-primary-600 to-primary-700 text-white py-20 mt-16">
-                <div className="max-w-screen-xl mx-auto px-4 text-center">
-                    <h1 className="text-4xl md:text-5xl font-extrabold mb-4">
+            <section className="relative bg-neutral-900 pt-32 pb-16 overflow-hidden">
+                <div className="absolute inset-0 bg-black/40" />
+                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent to-[#050506]" />
+
+                <div className="relative max-w-screen-xl mx-auto px-4 text-center z-10">
+                    <motion.h1
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6 }}
+                        className="text-4xl md:text-6xl font-extrabold text-white mb-6 tracking-tight"
+                    >
                         Clubes del Distrito 4465
-                    </h1>
-                    <p className="text-lg md:text-xl text-primary-100 max-w-2xl mx-auto">
-                        Explora todos los clubes activos de nuestro distrito.
-                    </p>
+                    </motion.h1>
+                    <motion.p
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.6, delay: 0.2 }}
+                        className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto font-light"
+                    >
+                        Explora nuestra red de clubes y encuentra el más cercano a ti.
+                    </motion.p>
                 </div>
             </section>
 
             {/* Main Content */}
-            <main className="flex-grow py-16 bg-gray-50">
-                <div className="max-w-screen-xl mx-auto px-4">
+            <main className="flex-grow py-12 px-4">
+                <div className="max-w-screen-xl mx-auto">
                     {/* Loading State */}
                     {loading && (
                         <div className="flex flex-col justify-center items-center py-20">
-                            <Spinner size="xl" color="info" />
-                            <p className="mt-4 text-lg text-gray-600">Cargando clubes...</p>
+                            <Spinner size="xl" color="pink" />
+                            <p className="mt-4 text-lg text-gray-400">Cargando clubes...</p>
                         </div>
                     )}
 
                     {/* Error State */}
                     {!loading && error && (
                         <div className="text-center py-20">
-                            <svg className="w-16 h-16 text-red-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <p className="text-red-600 text-lg font-medium">{error}</p>
+                            <p className="text-red-400 text-lg font-medium">{error}</p>
                         </div>
                     )}
 
-                    {/* Empty State */}
-                    {!loading && !error && clubs.length === 0 && (
-                        <div className="text-center py-20">
-                            <svg className="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
-                            </svg>
-                            <p className="text-gray-600 text-lg">No hay clubes disponibles en este momento.</p>
-                        </div>
-                    )}
-
-                    {/* Search and Filter Section */}
-                    {!loading && !error && clubs.length > 0 && (
+                    {/* Content */}
+                    {!loading && !error && (
                         <>
-                            <div className="mb-8 bg-white p-6 rounded-lg shadow-md">
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                    {/* Search by Name */}
+                            {/* Filters */}
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="mb-10 bg-neutral-900 p-6 rounded-2xl shadow-lg shadow-black/20 border border-neutral-800"
+                            >
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                     <div className="lg:col-span-2">
-                                        <label htmlFor="search" className="block text-sm font-medium text-gray-700 mb-2">
+                                        <label htmlFor="search" className="block text-sm font-medium text-gray-300 mb-2">
                                             Buscar por nombre
                                         </label>
                                         <TextInput
                                             id="search"
                                             type="text"
-                                            icon={() => (
-                                                <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                                </svg>
-                                            )}
+                                            icon={HiSearch}
                                             placeholder="Ej: Rotaract Iquitos..."
                                             value={searchQuery}
                                             onChange={(e) => setSearchQuery(e.target.value)}
-                                            className="w-full"
+                                            className="[&>div>input]:bg-neutral-800 [&>div>input]:border-neutral-700 [&>div>input]:text-white [&>div>input]:placeholder-gray-500"
                                         />
                                     </div>
 
-                                    {/* Filter by Department */}
                                     <div>
-                                        <label htmlFor="department" className="block text-sm font-medium text-gray-700 mb-2">
+                                        <label htmlFor="department" className="block text-sm font-medium text-gray-300 mb-2">
                                             Filtrar por departamento
                                         </label>
                                         <Select
                                             id="department"
+                                            icon={HiFilter}
                                             value={selectedDepartment}
                                             onChange={(e) => setSelectedDepartment(e.target.value)}
-                                            className="w-full"
+                                            className="[&>div>select]:bg-neutral-800 [&>div>select]:border-neutral-700 [&>div>select]:text-white"
                                         >
                                             <option value="">Todos los departamentos</option>
                                             {departments.map((dept) => (
@@ -166,121 +177,84 @@ export default function ClubsPage() {
                                     </div>
                                 </div>
 
-                                {/* Active Filters and Clear Button */}
                                 {(searchQuery || selectedDepartment) && (
-                                    <div className="mt-4 flex flex-wrap items-center gap-3">
-                                        <span className="text-sm text-gray-600 font-medium">Filtros activos:</span>
+                                    <div className="mt-6 flex flex-wrap items-center gap-3 pt-4 border-t border-neutral-800">
+                                        <span className="text-sm text-gray-400">Filtros activos:</span>
                                         {searchQuery && (
-                                            <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-primary-100 text-primary-800">
+                                            <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-primary-900/20 text-primary-400 border border-primary-900/30">
                                                 Búsqueda: "{searchQuery}"
                                             </span>
                                         )}
                                         {selectedDepartment && (
-                                            <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800">
+                                            <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-yellow-900/20 text-yellow-400 border border-yellow-900/30">
                                                 Departamento: {selectedDepartment}
                                             </span>
                                         )}
                                         <button
                                             onClick={clearFilters}
-                                            className="text-sm text-red-600 hover:text-red-800 font-medium underline focus:outline-none focus:ring-2 focus:ring-red-300 rounded px-2 py-1"
+                                            className="text-sm text-gray-400 hover:text-white transition-colors underline"
                                         >
                                             Limpiar filtros
                                         </button>
                                     </div>
                                 )}
-                            </div>
+                            </motion.div>
 
                             {/* Results Count */}
-                            <div className="mb-6">
-                                <p className="text-gray-600 text-sm md:text-base">
-                                    Mostrando <span className="font-semibold text-gray-900">{filteredClubs.length}</span> de {clubs.length} {clubs.length === 1 ? 'club' : 'clubes'}
+                            <div className="mb-8 flex items-center justify-between">
+                                <p className="text-gray-400">
+                                    Mostrando <span className="font-bold text-white">{filteredClubs.length}</span> clubes
                                 </p>
                             </div>
 
-                            {/* No Results Message */}
-                            {filteredClubs.length === 0 && (
-                                <div className="text-center py-16 bg-white rounded-lg shadow-sm">
-                                    <svg className="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                    <p className="text-gray-600 text-lg mb-2">No se encontraron clubes</p>
-                                    <p className="text-gray-500 text-sm">Intenta ajustar los filtros de búsqueda</p>
-                                </div>
-                            )}
-
-                            {/* Clubs Grid */}
-                            {filteredClubs.length > 0 && (
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {/* Grid */}
+                            {filteredClubs.length > 0 ? (
+                                <motion.div
+                                    variants={containerVariants}
+                                    initial="hidden"
+                                    animate="visible"
+                                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+                                >
                                     {filteredClubs.map((club) => (
-                                        <Card
-                                            key={club.id}
-                                            className="hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer"
-                                        >
-                                            {/* Icon */}
-                                            <div className="flex items-center justify-center w-16 h-16 mb-4 bg-primary-100 rounded-full mx-auto">
-                                                <svg className="w-8 h-8 text-primary-600" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
-                                                </svg>
-                                            </div>
-
-                                            {/* Club Name */}
-                                            <h3 className="text-xl font-bold text-gray-900 mb-3 text-center">
-                                                {club.nombre}
-                                            </h3>
-
-                                            {/* Location */}
-                                            <div className="flex items-center justify-center text-gray-600 mb-3">
-                                                <svg className="w-5 h-5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                </svg>
-                                                <span className="text-sm font-medium">
-                                                    {club.ciudad}, {club.departamento}
-                                                </span>
-                                            </div>
-
-                                            {/* Creation Date */}
-                                            <div className="flex items-center justify-center text-gray-500 pt-3 border-t border-gray-100">
-                                                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                                </svg>
-                                                <span className="text-xs">
-                                                    Fundado: {new Date(club.fechaCreacion).toLocaleDateString('es-PE', {
-                                                        year: 'numeric',
-                                                        month: 'long',
-                                                        day: 'numeric'
-                                                    })}
-                                                </span>
-                                            </div>
-
-                                            {/* Active Status Badge */}
-                                            {club.activo !== undefined && (
-                                                <div className="mt-3 flex justify-center">
-                                                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${club.activo
-                                                        ? 'bg-green-100 text-green-800'
-                                                        : 'bg-gray-100 text-gray-800'
-                                                        }`}>
-                                                        <span className={`w-2 h-2 mr-1.5 rounded-full ${club.activo ? 'bg-green-500' : 'bg-gray-500'
-                                                            }`}></span>
-                                                        {club.activo ? 'Activo' : 'Inactivo'}
-                                                    </span>
+                                        <motion.div key={club.id} variants={itemVariants}>
+                                            <div className="h-full bg-neutral-900 rounded-2xl p-6 shadow-lg shadow-black/20 border border-neutral-800 hover:border-primary-600/50 transition-all duration-300 group flex flex-col">
+                                                <div className="flex items-center justify-center w-20 h-20 mb-6 bg-neutral-800 rounded-full mx-auto group-hover:scale-110 transition-transform duration-300 shadow-inner shadow-black/50">
+                                                    <span className="text-3xl">🤝</span>
                                                 </div>
-                                            )}
 
-                                            {/* Ver Detalles Button */}
-                                            <div className="mt-4 pt-4 border-t border-gray-100">
-                                                <Link to={`/club/${club.id}`} className="w-full">
-                                                    <Button
-                                                        color="light"
-                                                        size="sm"
-                                                        className="w-full"
-                                                    >
-                                                        Ver detalles →
-                                                    </Button>
-                                                </Link>
+                                                <h3 className="text-xl font-bold text-white mb-4 text-center group-hover:text-primary-400 transition-colors">
+                                                    {club.nombre}
+                                                </h3>
+
+                                                <div className="space-y-3 mb-6 flex-grow">
+                                                    <div className="flex items-center justify-center text-gray-300">
+                                                        <HiLocationMarker className="w-5 h-5 mr-2 text-primary-500" />
+                                                        <span className="text-sm">{club.ciudad}, {club.departamento}</span>
+                                                    </div>
+                                                    <div className="flex items-center justify-center text-gray-400">
+                                                        <HiCalendar className="w-5 h-5 mr-2 text-yellow-500" />
+                                                        <span className="text-sm">
+                                                            Fundado: {new Date(club.fechaCreacion).toLocaleDateString()}
+                                                        </span>
+                                                    </div>
+                                                </div>
+
+                                                <div className="mt-auto pt-6 border-t border-neutral-800">
+                                                    <Link to={`/club/${club.id}`}>
+                                                        <Button
+                                                            className="w-full bg-neutral-800 hover:bg-primary-600 text-white border-none rounded-xl transition-colors duration-300"
+                                                        >
+                                                            Ver detalles
+                                                        </Button>
+                                                    </Link>
+                                                </div>
                                             </div>
-                                        </Card>
+                                        </motion.div>
                                     ))}
+                                </motion.div>
+                            ) : (
+                                <div className="text-center py-20 bg-neutral-900 rounded-2xl shadow-sm border border-neutral-800">
+                                    <p className="text-gray-400 text-lg">No se encontraron clubes con los filtros seleccionados.</p>
                                 </div>
                             )}
                         </>

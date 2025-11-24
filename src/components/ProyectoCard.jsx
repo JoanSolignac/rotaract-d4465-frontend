@@ -1,4 +1,4 @@
-import { Card, Button, Badge } from 'flowbite-react';
+import { Button, Badge } from 'flowbite-react';
 import { useNavigate } from 'react-router-dom';
 
 export default function ProyectoCard({ proyecto, onVerDetalles }) {
@@ -36,15 +36,15 @@ export default function ProyectoCard({ proyecto, onVerDetalles }) {
     const porcentajeCupos = Math.min((proyecto.inscritos / proyecto.cupoMaximo) * 100, 100);
 
     return (
-        <Card className="shadow-md rounded-xl hover:shadow-xl transition-shadow h-full flex flex-col justify-between">
-            <div className="p-0">
+        <div className="bg-neutral-900 rounded-2xl p-6 shadow-lg shadow-black/20 border border-neutral-800 hover:border-primary-600/50 transition-all duration-300 h-full flex flex-col group">
+            <div className="flex flex-col h-full">
                 {/* Title */}
-                <h3 className="text-xl font-bold text-gray-900 mb-3 leading-tight line-clamp-2 min-h-[3.5rem]">
+                <h3 className="text-xl font-bold text-white mb-3 leading-tight line-clamp-2 min-h-[3.5rem] group-hover:text-primary-400 transition-colors">
                     {proyecto.titulo}
                 </h3>
 
                 {/* Club */}
-                <div className="flex items-center text-gray-600 mb-3">
+                <div className="flex items-center text-gray-400 mb-3">
                     <svg className="w-5 h-5 mr-2 text-primary-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                         <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
                     </svg>
@@ -52,7 +52,7 @@ export default function ProyectoCard({ proyecto, onVerDetalles }) {
                 </div>
 
                 {/* Lugar */}
-                <div className="flex items-center text-gray-600 mb-3">
+                <div className="flex items-center text-gray-400 mb-3">
                     <svg className="w-5 h-5 mr-2 text-primary-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -62,13 +62,13 @@ export default function ProyectoCard({ proyecto, onVerDetalles }) {
 
                 {/* Estado */}
                 <div className="mb-4">
-                    <Badge color={getEstadoBadgeColor(proyecto.estadoProyecto)} className="inline-block">
+                    <Badge color={getEstadoBadgeColor(proyecto.estadoProyecto)} className="inline-block rounded-md">
                         {proyecto.estadoProyecto}
                     </Badge>
                 </div>
 
                 {/* Fechas */}
-                <div className="mb-4 text-sm text-gray-600 space-y-2">
+                <div className="mb-4 text-sm text-gray-400 space-y-2">
                     {/* Postulación */}
                     <div>
                         <div className="flex items-center mb-1">
@@ -97,16 +97,16 @@ export default function ProyectoCard({ proyecto, onVerDetalles }) {
                 </div>
 
                 {/* Cupos */}
-                <div className="mb-6 bg-gray-100 rounded-lg p-3">
-                    <div className="flex justify-between items-center mb-1">
-                        <span className="text-sm font-medium text-gray-700">Cupos</span>
-                        <span className="text-sm font-bold text-gray-900">
+                <div className="mb-6 bg-neutral-800/50 rounded-xl p-3 border border-neutral-700/50">
+                    <div className="flex justify-between items-center mb-2">
+                        <span className="text-sm font-medium text-gray-400">Cupos</span>
+                        <span className="text-sm font-bold text-white">
                             {proyecto.inscritos}/{proyecto.cupoMaximo}
                         </span>
                     </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div className="w-full bg-neutral-700 rounded-full h-2">
                         <div
-                            className="bg-primary-600 h-2 rounded-full transition-all"
+                            className="bg-primary-600 h-2 rounded-full transition-all shadow-[0_0_10px_rgba(226,15,122,0.5)]"
                             style={{
                                 width: `${porcentajeCupos}%`
                             }}
@@ -119,16 +119,15 @@ export default function ProyectoCard({ proyecto, onVerDetalles }) {
                     <Button
                         color="light"
                         size="sm"
-                        className="w-full"
+                        className="w-full bg-neutral-800 hover:bg-neutral-700 text-white border-neutral-700 transition-colors"
                         onClick={() => onVerDetalles(proyecto)}
                     >
                         Ver Proyecto
                     </Button>
 
                     <Button
-                        color="failure"
                         size="sm"
-                        className="w-full bg-primary-600 hover:bg-primary-700 border-none focus:ring-primary-300 text-white"
+                        className="w-full bg-primary-600 hover:bg-primary-700 text-white border-none focus:ring-primary-500 transition-colors shadow-lg shadow-primary-600/20"
                         disabled={cuposCompletos || !disponible}
                         onClick={handlePostular}
                     >
@@ -136,6 +135,6 @@ export default function ProyectoCard({ proyecto, onVerDetalles }) {
                     </Button>
                 </div>
             </div>
-        </Card>
+        </div>
     );
 }

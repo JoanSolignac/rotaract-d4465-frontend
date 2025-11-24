@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import AppNavbar from '../components/Navbar';
 import HeroSection from '../components/HeroSection';
 import MetricsSection from '../components/MetricsSection';
@@ -12,7 +13,7 @@ import Footer from '../components/Footer';
  */
 export default function LandingPage() {
     return (
-        <div className="min-h-screen flex flex-col bg-white">
+        <div className="min-h-screen flex flex-col bg-[#050506]">
             {/* Navigation */}
             <AppNavbar />
 

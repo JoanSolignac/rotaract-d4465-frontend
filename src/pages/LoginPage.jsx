@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Card, Button, Label, TextInput, Spinner } from 'flowbite-react';
 import { useNavigate, Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
+import { motion } from 'framer-motion';
 import AppNavbar from '../components/Navbar';
 
 export default function LoginPage() {
@@ -35,19 +36,16 @@ export default function LoginPage() {
             const data = await response.json();
 
             if (!response.ok) {
-                // Handle error with SweetAlert2
                 const errorMessage = data.errors && data.errors.length > 0 ? data.errors[0] : (data.message || 'Credenciales incorrectas.');
                 throw new Error(errorMessage);
             }
 
-            // Save auth data
             localStorage.setItem('accessToken', data.accessToken);
             localStorage.setItem('refreshToken', data.refreshToken);
             localStorage.setItem('correo', data.correo);
             localStorage.setItem('rol', data.rol);
             localStorage.setItem('nombre', data.nombre);
 
-            // Redirect based on role
             if (data.rol === 'INTERESADO') {
                 navigate('/interesado');
             } else {
@@ -59,7 +57,9 @@ export default function LoginPage() {
                 icon: 'error',
                 title: 'Error',
                 text: err.message || 'Ocurrió un error inesperado.',
-                confirmButtonColor: '#B40032'
+                confirmButtonColor: '#D91B5C', // Rotaract Magenta
+                background: document.documentElement.classList.contains('dark') ? '#1F2937' : '#fff',
+                color: document.documentElement.classList.contains('dark') ? '#fff' : '#000'
             });
         } finally {
             setLoading(false);
@@ -67,67 +67,82 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="min-h-screen flex flex-col bg-gray-50">
+        <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
             <AppNavbar />
 
-            <div className="flex-grow flex items-center justify-center px-4 py-12">
-                <Card className="w-full max-w-md shadow-lg">
-                    <div className="text-center mb-4">
-                        <h2 className="text-2xl font-bold text-gray-900">Iniciar Sesión</h2>
-                        <p className="text-gray-600 mt-1">Ingresa a tu cuenta Rotaract</p>
-                    </div>
+            <div className="flex-grow flex items-center justify-center px-4 py-12 relative overflow-hidden">
+                {/* Background Gradients */}
+                <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
+                    <div className="absolute top-1/4 -left-20 w-96 h-96 bg-rotaract-magenta/10 rounded-full blur-3xl" />
+                    <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-rotaract-gold/10 rounded-full blur-3xl" />
+                </div>
 
-                    <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-                        <div>
-                            <div className="mb-2 block">
-                                <Label htmlFor="correo" value="Correo electrónico" />
-                            </div>
-                            <TextInput
-                                id="correo"
-                                type="email"
-                                placeholder="nombre@ejemplo.com"
-                                required
-                                value={formData.correo}
-                                onChange={handleChange}
-                            />
-                        </div>
-                        <div>
-                            <div className="mb-2 block">
-                                <Label htmlFor="contrasena" value="Contraseña" />
-                            </div>
-                            <TextInput
-                                id="contrasena"
-                                type="password"
-                                placeholder="********"
-                                required
-                                value={formData.contrasena}
-                                onChange={handleChange}
-                            />
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5 }}
+                    className="w-full max-w-md z-10"
+                >
+                    <Card className="shadow-xl border-none dark:bg-gray-800">
+                        <div className="text-center mb-6">
+                            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Bienvenido</h2>
+                            <p className="text-gray-600 dark:text-gray-400">Ingresa a tu cuenta Rotaract</p>
                         </div>
 
-                        <Button
-                            type="submit"
-                            className="w-full mt-2 bg-[#B40032] hover:bg-[#8a0026] text-white focus:ring-[#B40032]"
-                            disabled={loading}
-                        >
-                            {loading ? (
-                                <>
-                                    <Spinner size="sm" light={true} className="mr-2" />
-                                    Iniciando sesión...
-                                </>
-                            ) : (
-                                'Ingresar'
-                            )}
-                        </Button>
-                    </form>
+                        <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
+                            <div>
+                                <div className="mb-2 block">
+                                    <Label htmlFor="correo" value="Correo electrónico" className="dark:text-gray-300" />
+                                </div>
+                                <TextInput
+                                    id="correo"
+                                    type="email"
+                                    placeholder="nombre@ejemplo.com"
+                                    required
+                                    value={formData.correo}
+                                    onChange={handleChange}
+                                    className="dark:bg-gray-700"
+                                />
+                            </div>
+                            <div>
+                                <div className="mb-2 block">
+                                    <Label htmlFor="contrasena" value="Contraseña" className="dark:text-gray-300" />
+                                </div>
+                                <TextInput
+                                    id="contrasena"
+                                    type="password"
+                                    placeholder="********"
+                                    required
+                                    value={formData.contrasena}
+                                    onChange={handleChange}
+                                    className="dark:bg-gray-700"
+                                />
+                            </div>
 
-                    <div className="text-center mt-4 text-sm text-gray-600">
-                        ¿No tienes una cuenta?{' '}
-                        <Link to="/register" className="text-[#B40032] hover:underline font-medium">
-                            Regístrate aquí
-                        </Link>
-                    </div>
-                </Card>
+                            <Button
+                                type="submit"
+                                className="w-full mt-2 bg-rotaract-magenta hover:bg-rotaract-magenta/90 text-white focus:ring-4 focus:ring-rotaract-magenta/50 transition-all"
+                                disabled={loading}
+                            >
+                                {loading ? (
+                                    <>
+                                        <Spinner size="sm" light={true} className="mr-2" />
+                                        Iniciando sesión...
+                                    </>
+                                ) : (
+                                    'Ingresar'
+                                )}
+                            </Button>
+                        </form>
+
+                        <div className="text-center mt-6 text-sm text-gray-600 dark:text-gray-400">
+                            ¿No tienes una cuenta?{' '}
+                            <Link to="/register" className="text-rotaract-magenta hover:text-rotaract-magenta/80 hover:underline font-semibold transition-colors">
+                                Regístrate aquí
+                            </Link>
+                        </div>
+                    </Card>
+                </motion.div>
             </div>
         </div>
     );

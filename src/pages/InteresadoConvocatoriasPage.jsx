@@ -207,35 +207,43 @@ export default function InteresadoConvocatoriasPage() {
     };
 
     return (
-        <div className="min-h-screen flex flex-col bg-white">
+        <div className="min-h-screen flex flex-col bg-[#050506]">
             <InteresadoNavbar />
 
-            <section className="bg-gradient-to-r from-primary-600 to-primary-700 text-white py-16 md:py-20 mt-0">
-                <div className="max-w-screen-xl mx-auto px-4 text-center">
-                    <h1 className="text-3xl md:text-5xl font-extrabold mb-4 leading-tight">
+            <section className="relative bg-neutral-900 pt-32 pb-16 overflow-hidden">
+                <div className="absolute inset-0 bg-black/40" />
+                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent to-[#050506]" />
+
+                <div className="relative max-w-screen-xl mx-auto px-4 text-center z-10">
+                    <h1 className="text-3xl md:text-5xl font-extrabold text-white mb-4 leading-tight">
                         Convocatorias del Distrito 4465
                     </h1>
-                    <p className="text-base md:text-xl text-primary-100 max-w-2xl mx-auto">
+                    <p className="text-base md:text-xl text-gray-400 max-w-2xl mx-auto">
                         Explora todas las convocatorias disponibles y únete a las actividades de nuestro distrito.
                     </p>
                 </div>
             </section>
 
-            <main className="flex-grow py-8 bg-gray-50">
+            <main className="flex-grow py-8">
                 <div className="max-w-screen-xl mx-auto px-4">
-                    {loading && <div className="text-center py-20"><Spinner size="xl" /></div>}
-                    {!loading && error && <div className="text-center py-20 text-red-600">{error}</div>}
+                    {loading && <div className="text-center py-20"><Spinner size="xl" color="pink" /><p className="mt-4 text-gray-400">Cargando...</p></div>}
+                    {!loading && error && <div className="text-center py-20 text-red-400">{error}</div>}
 
                     {!loading && !error && (
                         <>
-                            <div className="mb-8 bg-white p-6 rounded-lg shadow-md">
+                            <div className="mb-8 bg-neutral-900 p-6 rounded-2xl shadow-lg shadow-black/20 border border-neutral-800">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <TextInput
                                         placeholder="Buscar por título..."
                                         value={searchQuery}
                                         onChange={e => setSearchQuery(e.target.value)}
+                                        className="[&>div>input]:bg-neutral-800 [&>div>input]:border-neutral-700 [&>div>input]:text-white [&>div>input]:placeholder-gray-500"
                                     />
-                                    <Select value={selectedClub} onChange={e => setSelectedClub(e.target.value)}>
+                                    <Select
+                                        value={selectedClub}
+                                        onChange={e => setSelectedClub(e.target.value)}
+                                        className="[&>div>select]:bg-neutral-800 [&>div>select]:border-neutral-700 [&>div>select]:text-white"
+                                    >
                                         <option value="">Todos los clubes</option>
                                         {clubs.map(club => <option key={club} value={club}>{club}</option>)}
                                     </Select>

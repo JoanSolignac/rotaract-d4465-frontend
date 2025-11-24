@@ -1,13 +1,11 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Pagination, TextInput, Spinner, Select } from 'flowbite-react';
+import { motion } from 'framer-motion';
+import { HiSearch, HiFilter } from 'react-icons/hi';
 import AppNavbar from '../components/Navbar';
 import ConvocatoriaCard from '../components/ConvocatoriaCard';
 import ConvocatoriaDetailsModal from '../components/ConvocatoriaDetailsModal';
 
-/**
- * ConvocatoriasPage Component
- * Display all available convocatorias with search and pagination
- */
 export default function ConvocatoriasPage() {
     const [convocatorias, setConvocatorias] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -73,13 +71,11 @@ export default function ConvocatoriasPage() {
         setSelectedConvocatoria(null);
     };
 
-    // Get unique clubs for filter dropdown
     const clubOptions = useMemo(() => {
         const uniqueClubs = [...new Set(convocatorias.map(conv => conv.clubNombre))];
         return uniqueClubs.sort();
     }, [convocatorias]);
 
-    // Filter convocatorias using useMemo
     const filteredConvocatorias = useMemo(() => {
         return convocatorias.filter((conv) => {
             const matchesTitle =
@@ -99,157 +95,173 @@ export default function ConvocatoriasPage() {
         setSelectedClub('');
     };
 
+    // Animation variants
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.1
+            }
+        }
+    };
+
+    const itemVariants = {
+        hidden: { opacity: 0, y: 20 },
+        visible: {
+            opacity: 1,
+            y: 0,
+            transition: { duration: 0.5 }
+        }
+    };
+
     return (
-        <div className="min-h-screen flex flex-col bg-gray-50">
+        <div className="min-h-screen flex flex-col bg-[#050506]">
             <AppNavbar />
 
             {/* Hero Section */}
-            <section className="bg-gradient-to-r from-primary-600 to-primary-700 text-white py-16 md:py-20 mt-16">
-                <div className="max-w-screen-xl mx-auto px-4 text-center">
-                    <h1 className="text-3xl md:text-5xl font-extrabold mb-4 leading-tight">
+            <section className="relative bg-neutral-900 pt-32 pb-16 overflow-hidden">
+                <div className="absolute inset-0 bg-black/40" />
+                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent to-[#050506]" />
+
+                <div className="relative max-w-screen-xl mx-auto px-4 text-center z-10">
+                    <motion.h1
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6 }}
+                        className="text-3xl md:text-5xl font-extrabold text-white mb-6 leading-tight tracking-tight"
+                    >
                         Convocatorias del Distrito 4465
-                    </h1>
-                    <p className="text-base md:text-xl text-primary-100 max-w-2xl mx-auto">
+                    </motion.h1>
+                    <motion.p
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.6, delay: 0.2 }}
+                        className="text-base md:text-xl text-gray-400 max-w-2xl mx-auto font-light"
+                    >
                         Explora todas las convocatorias disponibles y únete a las actividades de nuestro distrito.
-                    </p>
+                    </motion.p>
                 </div>
             </section>
 
-            <main className="flex-grow pb-16">
-                <div className="max-w-7xl mx-auto px-4 py-8 md:py-10">
+            <main className="flex-grow pb-16 px-4">
+                <div className="max-w-7xl mx-auto py-12">
 
                     {/* Search and Filter Section */}
                     {!loading && !error && convocatorias.length > 0 && (
-                        <>
-                            <div className="mb-8 bg-white p-4 md:p-6 rounded-lg shadow-md">
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                    {/* Search by Title */}
-                                    <div className="lg:col-span-2">
-                                        <label htmlFor="searchTitle" className="block text-sm font-medium text-gray-700 mb-2">
-                                            Buscar por título
-                                        </label>
-                                        <TextInput
-                                            id="searchTitle"
-                                            type="text"
-                                            icon={() => (
-                                                <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                                </svg>
-                                            )}
-                                            placeholder="Ej: Voluntariado..."
-                                            value={searchQuery}
-                                            onChange={(e) => setSearchQuery(e.target.value)}
-                                            className="w-full"
-                                        />
-                                    </div>
-
-                                    {/* Filter by Club */}
-                                    <div>
-                                        <label htmlFor="filterClub" className="block text-sm font-medium text-gray-700 mb-2">
-                                            Filtrar por club
-                                        </label>
-                                        <Select
-                                            id="filterClub"
-                                            value={selectedClub}
-                                            onChange={(e) => setSelectedClub(e.target.value)}
-                                            className="w-full"
-                                        >
-                                            <option value="">Todos los clubes</option>
-                                            {clubOptions.map((club) => (
-                                                <option key={club} value={club}>
-                                                    {club}
-                                                </option>
-                                            ))}
-                                        </Select>
-                                    </div>
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="mb-10 bg-neutral-900 p-6 rounded-2xl shadow-lg shadow-black/20 border border-neutral-800"
+                        >
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <div className="lg:col-span-2">
+                                    <label htmlFor="searchTitle" className="block text-sm font-medium text-gray-300 mb-2">
+                                        Buscar por título
+                                    </label>
+                                    <TextInput
+                                        id="searchTitle"
+                                        type="text"
+                                        icon={HiSearch}
+                                        placeholder="Ej: Voluntariado..."
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        className="[&>div>input]:bg-neutral-800 [&>div>input]:border-neutral-700 [&>div>input]:text-white [&>div>input]:placeholder-gray-500"
+                                    />
                                 </div>
 
-                                {/* Active Filters and Clear Button */}
-                                {(searchQuery || selectedClub) && (
-                                    <div className="mt-4 flex flex-wrap items-center gap-3">
-                                        <span className="text-sm text-gray-600 font-medium">Filtros activos:</span>
-                                        {searchQuery && (
-                                            <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-primary-100 text-primary-800">
-                                                Título: "{searchQuery}"
-                                            </span>
-                                        )}
-                                        {selectedClub && (
-                                            <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800">
-                                                Club: {selectedClub}
-                                            </span>
-                                        )}
-                                        <button
-                                            onClick={clearFilters}
-                                            className="text-sm text-red-600 hover:text-red-800 font-medium underline focus:outline-none focus:ring-2 focus:ring-red-300 rounded px-2 py-1"
-                                        >
-                                            Limpiar filtros
-                                        </button>
-                                    </div>
-                                )}
-
+                                <div>
+                                    <label htmlFor="filterClub" className="block text-sm font-medium text-gray-300 mb-2">
+                                        Filtrar por club
+                                    </label>
+                                    <Select
+                                        id="filterClub"
+                                        icon={HiFilter}
+                                        value={selectedClub}
+                                        onChange={(e) => setSelectedClub(e.target.value)}
+                                        className="[&>div>select]:bg-neutral-800 [&>div>select]:border-neutral-700 [&>div>select]:text-white"
+                                    >
+                                        <option value="">Todos los clubes</option>
+                                        {clubOptions.map((club) => (
+                                            <option key={club} value={club}>
+                                                {club}
+                                            </option>
+                                        ))}
+                                    </Select>
+                                </div>
                             </div>
 
-                            {/* Results Count */}
-                            <div className="mb-6">
-                                <p className="text-gray-600 text-sm md:text-base">
-                                    Mostrando <span className="font-semibold text-gray-900">{filteredConvocatorias.length}</span> de {convocatorias.length} {convocatorias.length === 1 ? 'convocatoria' : 'convocatorias'}
-                                </p>
-                            </div>
-
-                            {/* No Results Message */}
-                            {filteredConvocatorias.length === 0 && (
-                                <div className="text-center py-16 bg-white rounded-lg shadow-sm">
-                                    <svg className="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                    <p className="text-gray-600 text-lg mb-2">No se encontraron convocatorias</p>
-                                    <p className="text-gray-500 text-sm">Intenta ajustar los filtros de búsqueda</p>
+                            {(searchQuery || selectedClub) && (
+                                <div className="mt-6 flex flex-wrap items-center gap-3 pt-4 border-t border-neutral-800">
+                                    <span className="text-sm text-gray-400">Filtros activos:</span>
+                                    {searchQuery && (
+                                        <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-primary-900/20 text-primary-400 border border-primary-900/30">
+                                            Título: "{searchQuery}"
+                                        </span>
+                                    )}
+                                    {selectedClub && (
+                                        <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-yellow-900/20 text-yellow-400 border border-yellow-900/30">
+                                            Club: {selectedClub}
+                                        </span>
+                                    )}
+                                    <button
+                                        onClick={clearFilters}
+                                        className="text-sm text-gray-400 hover:text-white transition-colors underline"
+                                    >
+                                        Limpiar filtros
+                                    </button>
                                 </div>
                             )}
-                        </>
+                        </motion.div>
                     )}
+
+                    {/* Results Count */}
+                    <div className="mb-8 flex items-center justify-between">
+                        <p className="text-gray-400">
+                            Mostrando <span className="font-bold text-white">{filteredConvocatorias.length}</span> convocatorias
+                        </p>
+                    </div>
 
                     {/* Loading State */}
                     {loading && (
                         <div className="flex flex-col justify-center items-center py-20">
-                            <Spinner size="xl" color="info" />
-                            <p className="mt-4 text-lg text-gray-600">Cargando convocatorias...</p>
+                            <Spinner size="xl" color="pink" />
+                            <p className="mt-4 text-lg text-gray-400">Cargando convocatorias...</p>
                         </div>
                     )}
 
                     {/* Error State */}
                     {!loading && error && (
                         <div className="text-center py-20">
-                            <svg className="w-16 h-16 text-red-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <p className="text-red-600 text-lg font-medium">{error}</p>
+                            <p className="text-red-400 text-lg font-medium">{error}</p>
                         </div>
                     )}
 
                     {/* Empty State */}
-                    {!loading && !error && convocatorias.length === 0 && (
-                        <div className="text-center py-20 bg-white rounded-lg shadow-sm">
-                            <svg className="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                            </svg>
-                            <p className="text-gray-600 text-lg mb-2">No se encontraron convocatorias</p>
-                            <p className="text-gray-500 text-sm">No hay convocatorias disponibles en este momento</p>
+                    {!loading && !error && filteredConvocatorias.length === 0 && (
+                        <div className="text-center py-20 bg-neutral-900 rounded-2xl shadow-sm border border-neutral-800">
+                            <p className="text-gray-400 text-lg">No se encontraron convocatorias.</p>
                         </div>
                     )}
 
                     {/* Convocatorias Grid */}
                     {!loading && !error && filteredConvocatorias.length > 0 && (
                         <>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                            <motion.div
+                                variants={containerVariants}
+                                initial="hidden"
+                                animate="visible"
+                                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-12"
+                            >
                                 {filteredConvocatorias.map((convocatoria) => (
-                                    <ConvocatoriaCard
-                                        key={convocatoria.id}
-                                        convocatoria={convocatoria}
-                                        onVerDetalles={handleVerDetalles}
-                                    />
+                                    <motion.div key={convocatoria.id} variants={itemVariants}>
+                                        <ConvocatoriaCard
+                                            convocatoria={convocatoria}
+                                            onVerDetalles={handleVerDetalles}
+                                        />
+                                    </motion.div>
                                 ))}
-                            </div>
+                            </motion.div>
 
                             {/* Pagination */}
                             {totalPages > 1 && (
@@ -259,6 +271,7 @@ export default function ConvocatoriasPage() {
                                         totalPages={totalPages}
                                         onPageChange={handlePageChange}
                                         showIcons
+                                        className="text-white [&>button]:bg-neutral-800 [&>button]:text-white [&>button:hover]:bg-neutral-700"
                                     />
                                 </div>
                             )}

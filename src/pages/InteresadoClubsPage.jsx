@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Card, Spinner, TextInput, Select, Button } from 'flowbite-react';
+import { Spinner, TextInput, Select, Button } from 'flowbite-react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import InteresadoNavbar from '../components/InteresadoNavbar';
 
 export default function InteresadoClubsPage() {
@@ -61,50 +62,63 @@ export default function InteresadoClubsPage() {
     };
 
     return (
-        <div className="min-h-screen flex flex-col bg-white">
+        <div className="min-h-screen flex flex-col bg-[#050506]">
             <InteresadoNavbar />
 
             {/* Hero Section */}
-            <section className="bg-gradient-to-r from-primary-600 to-primary-700 text-white py-20 mt-0">
-                <div className="max-w-screen-xl mx-auto px-4 text-center">
-                    <h1 className="text-4xl md:text-5xl font-extrabold mb-4">
+            <section className="relative bg-neutral-900 pt-32 pb-16 overflow-hidden">
+                <div className="absolute inset-0 bg-black/40" />
+                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent to-[#050506]" />
+
+                <div className="relative max-w-screen-xl mx-auto px-4 text-center z-10">
+                    <motion.h1
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6 }}
+                        className="text-4xl md:text-5xl font-extrabold text-white mb-4"
+                    >
                         Clubes del Distrito 4465
-                    </h1>
-                    <p className="text-lg md:text-xl text-primary-100 max-w-2xl mx-auto">
+                    </motion.h1>
+                    <motion.p
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6, delay: 0.2 }}
+                        className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto"
+                    >
                         Explora todos los clubes activos de nuestro distrito.
-                    </p>
+                    </motion.p>
                 </div>
             </section>
 
             {/* Main Content */}
-            <main className="flex-grow py-8 bg-gray-50">
+            <main className="flex-grow py-8">
                 <div className="max-w-screen-xl mx-auto px-4">
                     {loading && (
                         <div className="flex flex-col justify-center items-center py-20">
-                            <Spinner size="xl" color="info" />
-                            <p className="mt-4 text-lg text-gray-600">Cargando clubes...</p>
+                            <Spinner size="xl" color="pink" />
+                            <p className="mt-4 text-lg text-gray-400">Cargando clubes...</p>
                         </div>
                     )}
 
                     {!loading && error && (
                         <div className="text-center py-20">
-                            <p className="text-red-600 text-lg font-medium">{error}</p>
+                            <p className="text-red-400 text-lg font-medium">{error}</p>
                         </div>
                     )}
 
                     {!loading && !error && clubs.length === 0 && (
                         <div className="text-center py-20">
-                            <p className="text-gray-600 text-lg">No hay clubes disponibles en este momento.</p>
+                            <p className="text-gray-400 text-lg">No hay clubes disponibles en este momento.</p>
                         </div>
                     )}
 
                     {!loading && !error && clubs.length > 0 && (
                         <>
-                            <div className="mb-8 bg-white p-6 rounded-lg shadow-md">
+                            <div className="mb-8 bg-neutral-900 p-6 rounded-2xl shadow-lg shadow-black/20 border border-neutral-800">
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                     {/* Search by Name */}
                                     <div className="lg:col-span-2">
-                                        <label htmlFor="search" className="block text-sm font-medium text-gray-700 mb-2">
+                                        <label htmlFor="search" className="block text-sm font-medium text-gray-300 mb-2">
                                             Buscar por nombre
                                         </label>
                                         <TextInput
@@ -118,20 +132,20 @@ export default function InteresadoClubsPage() {
                                             placeholder="Ej: Rotaract Iquitos..."
                                             value={searchQuery}
                                             onChange={(e) => setSearchQuery(e.target.value)}
-                                            className="w-full"
+                                            className="[&>div>input]:bg-neutral-800 [&>div>input]:border-neutral-700 [&>div>input]:text-white [&>div>input]:placeholder-gray-500"
                                         />
                                     </div>
 
                                     {/* Filter by Department */}
                                     <div>
-                                        <label htmlFor="department" className="block text-sm font-medium text-gray-700 mb-2">
+                                        <label htmlFor="department" className="block text-sm font-medium text-gray-300 mb-2">
                                             Filtrar por departamento
                                         </label>
                                         <Select
                                             id="department"
                                             value={selectedDepartment}
                                             onChange={(e) => setSelectedDepartment(e.target.value)}
-                                            className="w-full"
+                                            className="[&>div>select]:bg-neutral-800 [&>div>select]:border-neutral-700 [&>div>select]:text-white"
                                         >
                                             <option value="">Todos los departamentos</option>
                                             {departments.map((dept) => (
@@ -145,21 +159,21 @@ export default function InteresadoClubsPage() {
 
                                 {/* Active Filters and Clear Button */}
                                 {(searchQuery || selectedDepartment) && (
-                                    <div className="mt-4 flex flex-wrap items-center gap-3">
-                                        <span className="text-sm text-gray-600 font-medium">Filtros activos:</span>
+                                    <div className="mt-4 flex flex-wrap items-center gap-3 pt-4 border-t border-neutral-800">
+                                        <span className="text-sm text-gray-400 font-medium">Filtros activos:</span>
                                         {searchQuery && (
-                                            <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-primary-100 text-primary-800">
+                                            <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-primary-900/20 text-primary-400 border border-primary-900/30">
                                                 Búsqueda: "{searchQuery}"
                                             </span>
                                         )}
                                         {selectedDepartment && (
-                                            <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800">
+                                            <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-yellow-900/20 text-yellow-400 border border-yellow-900/30">
                                                 Departamento: {selectedDepartment}
                                             </span>
                                         )}
                                         <button
                                             onClick={clearFilters}
-                                            className="text-sm text-red-600 hover:text-red-800 font-medium underline focus:outline-none focus:ring-2 focus:ring-red-300 rounded px-2 py-1"
+                                            className="text-sm text-gray-400 hover:text-white font-medium underline transition-colors"
                                         >
                                             Limpiar filtros
                                         </button>
@@ -169,18 +183,18 @@ export default function InteresadoClubsPage() {
 
                             {/* Results Count */}
                             <div className="mb-6">
-                                <p className="text-gray-600 text-sm md:text-base">
-                                    Mostrando <span className="font-semibold text-gray-900">{filteredClubs.length}</span> de {clubs.length} {clubs.length === 1 ? 'club' : 'clubes'}
+                                <p className="text-gray-400 text-sm md:text-base">
+                                    Mostrando <span className="font-semibold text-white">{filteredClubs.length}</span> de {clubs.length} {clubs.length === 1 ? 'club' : 'clubes'}
                                 </p>
                             </div>
 
                             {/* No Results Message */}
                             {filteredClubs.length === 0 && (
-                                <div className="text-center py-16 bg-white rounded-lg shadow-sm">
-                                    <svg className="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <div className="text-center py-16 bg-neutral-900 rounded-2xl shadow-sm border border-neutral-800">
+                                    <svg className="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
-                                    <p className="text-gray-600 text-lg mb-2">No se encontraron clubes</p>
+                                    <p className="text-gray-400 text-lg mb-2">No se encontraron clubes</p>
                                     <p className="text-gray-500 text-sm">Intenta ajustar los filtros de búsqueda</p>
                                 </div>
                             )}
@@ -188,25 +202,28 @@ export default function InteresadoClubsPage() {
                             {/* Clubs Grid */}
                             {filteredClubs.length > 0 && (
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                    {filteredClubs.map((club) => (
-                                        <Card
+                                    {filteredClubs.map((club, index) => (
+                                        <motion.div
                                             key={club.id}
-                                            className="hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer"
+                                            initial={{ opacity: 0, y: 20 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{ duration: 0.4, delay: index * 0.1 }}
+                                            className="bg-neutral-900 rounded-2xl p-6 shadow-lg shadow-black/20 border border-neutral-800 hover:border-primary-600/50 transition-all duration-300 hover:-translate-y-1 cursor-pointer group"
                                         >
                                             {/* Icon */}
-                                            <div className="flex items-center justify-center w-16 h-16 mb-4 bg-primary-100 rounded-full mx-auto">
-                                                <svg className="w-8 h-8 text-primary-600" fill="currentColor" viewBox="0 0 20 20">
+                                            <div className="flex items-center justify-center w-16 h-16 mb-4 bg-primary-900/20 rounded-full mx-auto shadow-lg shadow-primary-600/10">
+                                                <svg className="w-8 h-8 text-primary-500" fill="currentColor" viewBox="0 0 20 20">
                                                     <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
                                                 </svg>
                                             </div>
 
                                             {/* Club Name */}
-                                            <h3 className="text-xl font-bold text-gray-900 mb-3 text-center">
+                                            <h3 className="text-xl font-bold text-white mb-3 text-center group-hover:text-primary-400 transition-colors">
                                                 {club.nombre}
                                             </h3>
 
                                             {/* Location */}
-                                            <div className="flex items-center justify-center text-gray-600 mb-3">
+                                            <div className="flex items-center justify-center text-gray-400 mb-3">
                                                 <svg className="w-5 h-5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -217,7 +234,7 @@ export default function InteresadoClubsPage() {
                                             </div>
 
                                             {/* Creation Date */}
-                                            <div className="flex items-center justify-center text-gray-500 pt-3 border-t border-gray-100">
+                                            <div className="flex items-center justify-center text-gray-500 pt-3 border-t border-neutral-800">
                                                 <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                                 </svg>
@@ -245,18 +262,18 @@ export default function InteresadoClubsPage() {
                                             )}
 
                                             {/* Ver Detalles Button */}
-                                            <div className="mt-4 pt-4 border-t border-gray-100">
+                                            <div className="mt-4 pt-4 border-t border-neutral-800">
                                                 <Link to={`/interesado/club/${club.id}`} className="w-full">
                                                     <Button
                                                         color="light"
                                                         size="sm"
-                                                        className="w-full"
+                                                        className="w-full bg-neutral-800 hover:bg-neutral-700 text-white border-neutral-700 transition-colors"
                                                     >
                                                         Ver detalles →
                                                     </Button>
                                                 </Link>
                                             </div>
-                                        </Card>
+                                        </motion.div>
                                     ))}
                                 </div>
                             )}

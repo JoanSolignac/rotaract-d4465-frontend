@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Pagination, TextInput, Spinner, Select } from 'flowbite-react';
+import { motion } from 'framer-motion';
 import AppNavbar from '../components/Navbar';
 import ProyectoCard from '../components/ProyectoCard';
 import ProyectoDetailsModal from '../components/ProyectoDetailsModal';
@@ -100,7 +101,12 @@ export default function ProyectosPage() {
     };
 
     return (
-        <div className="min-h-screen flex flex-col bg-[#050506]">
+        <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            className="min-h-screen flex flex-col bg-[#050506]"
+        >
             <AppNavbar />
 
             {/* Hero Section */}
@@ -280,6 +286,6 @@ export default function ProyectosPage() {
                 data={selectedProyecto}
                 isAuthenticated={isAuthenticated}
             />
-        </div>
+        </motion.div>
     );
 }

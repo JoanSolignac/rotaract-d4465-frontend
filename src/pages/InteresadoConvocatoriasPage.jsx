@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Spinner, TextInput, Select } from 'flowbite-react';
+import { motion } from 'framer-motion';
 import Swal from 'sweetalert2';
 import InteresadoNavbar from '../components/InteresadoNavbar';
 import ConvocatoriaCard from '../components/ConvocatoriaCard';
@@ -207,7 +208,12 @@ export default function InteresadoConvocatoriasPage() {
     };
 
     return (
-        <div className="min-h-screen flex flex-col bg-[#050506]">
+        <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            className="min-h-screen flex flex-col bg-[#050506]"
+        >
             <InteresadoNavbar />
 
             <section className="relative bg-neutral-900 pt-32 pb-16 overflow-hidden">
@@ -273,6 +279,6 @@ export default function InteresadoConvocatoriasPage() {
                     onPostular={handlePostular}
                 />
             )}
-        </div>
+        </motion.div>
     );
 }

@@ -1,10 +1,16 @@
 import { Card, Button } from 'flowbite-react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import InteresadoNavbar from '../components/InteresadoNavbar';
 
 export default function InteresadoDashboard() {
     return (
-        <div className="min-h-screen bg-[#050506] flex flex-col">
+        <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            className="min-h-screen bg-[#050506] flex flex-col"
+        >
             <InteresadoNavbar />
 
             <div className="flex-grow container mx-auto px-4 py-12 pt-24">
@@ -80,6 +86,6 @@ export default function InteresadoDashboard() {
                     </div>
                 </div>
             </div>
-        </div>
+        </motion.div>
     );
 }

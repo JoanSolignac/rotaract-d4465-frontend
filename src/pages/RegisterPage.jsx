@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { Card, Button, Label, TextInput, Alert, Spinner } from 'flowbite-react';
+import { Card, Button, Label, TextInput, Spinner } from 'flowbite-react';
 import { useNavigate, Link } from 'react-router-dom';
+import Swal from 'sweetalert2';
 import AppNavbar from '../components/Navbar';
 
 export default function RegisterPage() {
@@ -11,7 +12,6 @@ export default function RegisterPage() {
         ciudad: '',
         fechaNacimiento: ''
     });
-    const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
@@ -24,12 +24,16 @@ export default function RegisterPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError(null);
         setLoading(true);
 
         // Basic Validation
         if (!formData.nombre || !formData.correo || !formData.contrasena || !formData.ciudad || !formData.fechaNacimiento) {
-            setError('Por favor, completa todos los campos.');
+            Swal.fire({
+                icon: 'warning',
+                title: 'Campos incompletos',
+                text: 'Por favor, completa todos los campos.',
+                confirmButtonColor: '#B40032'
+            });
             setLoading(false);
             return;
         }
@@ -46,14 +50,27 @@ export default function RegisterPage() {
             const data = await response.json();
 
             if (!response.ok) {
-                throw new Error(data.message || 'Error al registrarse. Intenta nuevamente.');
+                const errorMessage = data.errors && data.errors.length > 0 ? data.errors[0] : (data.message || 'Error al registrarse.');
+                throw new Error(errorMessage);
             }
 
-            // Success - Redirect to login
+            // Success - Show alert and redirect
+            await Swal.fire({
+                icon: 'success',
+                title: '¡Registro Exitoso!',
+                text: 'Tu cuenta ha sido creada correctamente. Ahora puedes iniciar sesión.',
+                confirmButtonColor: '#B40032'
+            });
+
             navigate('/login');
 
         } catch (err) {
-            setError(err.message || 'Ocurrió un error inesperado al registrarse.');
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: err.message || 'Ocurrió un error inesperado al registrarse.',
+                confirmButtonColor: '#B40032'
+            });
         } finally {
             setLoading(false);
         }
@@ -69,12 +86,6 @@ export default function RegisterPage() {
                         <h2 className="text-2xl font-bold text-gray-900">Crear Cuenta</h2>
                         <p className="text-gray-600 mt-1">Únete a Rotaract Distrito 4465</p>
                     </div>
-
-                    {error && (
-                        <Alert color="failure" className="mb-4">
-                            <span>{error}</span>
-                        </Alert>
-                    )}
 
                     <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
                         <div>

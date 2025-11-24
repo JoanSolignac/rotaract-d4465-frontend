@@ -1,10 +1,15 @@
 import { Card, Button, Badge } from 'flowbite-react';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
-export default function ConvocatoriaCard({ convocatoria, onVerDetalles }) {
+export default function ConvocatoriaCard({ convocatoria, onVerDetalles, onPostular }) {
     const navigate = useNavigate();
     const isAuthenticated = Boolean(localStorage.getItem("accessToken"));
-    const cuposCompletos = convocatoria.inscritos >= convocatoria.cupoMaximo;
+
+    // Safe handling for potentially missing data
+    const inscritos = convocatoria?.inscritos ?? 0;
+    const cupoMaximo = convocatoria?.cupoMaximo ?? 0;
+    const cuposCompletos = inscritos >= cupoMaximo;
 
     const getEstadoBadgeColor = (estado) => {
         switch (estado?.toUpperCase()) {
@@ -19,13 +24,27 @@ export default function ConvocatoriaCard({ convocatoria, onVerDetalles }) {
         }
     };
 
-    const handlePostular = () => {
+    const handlePostular = async () => {
         if (!isAuthenticated) {
             navigate('/login');
             return;
         }
-        // Logic for authenticated user (currently no endpoint)
-        console.log("Postular click - Authenticated");
+
+        // Show confirmation dialog
+        const result = await Swal.fire({
+            title: '¿Estás seguro?',
+            text: `¿Deseas inscribirte a la convocatoria "${convocatoria.titulo}"?`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#B40032',
+            cancelButtonColor: '#6B7280',
+            confirmButtonText: 'Sí, inscribirme',
+            cancelButtonText: 'Cancelar'
+        });
+
+        if (result.isConfirmed && onPostular) {
+            onPostular(convocatoria);
+        }
     };
 
     return (
@@ -71,14 +90,14 @@ export default function ConvocatoriaCard({ convocatoria, onVerDetalles }) {
                     <div className="flex justify-between items-center mb-1">
                         <span className="text-sm font-medium text-gray-700">Cupos</span>
                         <span className="text-sm font-bold text-gray-900">
-                            {convocatoria.inscritos}/{convocatoria.cupoMaximo}
+                            {inscritos}/{cupoMaximo}
                         </span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
                         <div
                             className="bg-primary-600 h-2 rounded-full transition-all"
                             style={{
-                                width: `${Math.min((convocatoria.inscritos / convocatoria.cupoMaximo) * 100, 100)}%`
+                                width: `${cupoMaximo > 0 ? Math.min((inscritos / cupoMaximo) * 100, 100) : 0}%`
                             }}
                         />
                     </div>

@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { Card, Button, Label, TextInput, Alert, Spinner } from 'flowbite-react';
+import { Card, Button, Label, TextInput, Spinner } from 'flowbite-react';
 import { useNavigate, Link } from 'react-router-dom';
+import Swal from 'sweetalert2';
 import AppNavbar from '../components/Navbar';
 
 export default function LoginPage() {
@@ -8,7 +9,6 @@ export default function LoginPage() {
         correo: '',
         contrasena: ''
     });
-    const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
@@ -21,7 +21,6 @@ export default function LoginPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError(null);
         setLoading(true);
 
         try {
@@ -36,7 +35,9 @@ export default function LoginPage() {
             const data = await response.json();
 
             if (!response.ok) {
-                throw new Error(data.message || 'Credenciales incorrectas o error en el servidor.');
+                // Handle error with SweetAlert2
+                const errorMessage = data.errors && data.errors.length > 0 ? data.errors[0] : (data.message || 'Credenciales incorrectas.');
+                throw new Error(errorMessage);
             }
 
             // Save auth data
@@ -45,11 +46,20 @@ export default function LoginPage() {
             localStorage.setItem('correo', data.correo);
             localStorage.setItem('rol', data.rol);
 
-            // Redirect
-            navigate('/convocatorias');
+            // Redirect based on role
+            if (data.rol === 'INTERESADO') {
+                navigate('/interesado');
+            } else {
+                navigate('/convocatorias');
+            }
 
         } catch (err) {
-            setError(err.message || 'Ocurrió un error inesperado. Intenta nuevamente.');
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: err.message || 'Ocurrió un error inesperado.',
+                confirmButtonColor: '#B40032'
+            });
         } finally {
             setLoading(false);
         }
@@ -65,12 +75,6 @@ export default function LoginPage() {
                         <h2 className="text-2xl font-bold text-gray-900">Iniciar Sesión</h2>
                         <p className="text-gray-600 mt-1">Ingresa a tu cuenta Rotaract</p>
                     </div>
-
-                    {error && (
-                        <Alert color="failure" className="mb-4">
-                            <span>{error}</span>
-                        </Alert>
-                    )}
 
                     <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
                         <div>

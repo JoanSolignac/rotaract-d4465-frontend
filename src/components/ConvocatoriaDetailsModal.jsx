@@ -1,7 +1,7 @@
 import { Modal, Button, Badge } from 'flowbite-react';
 import { useNavigate } from 'react-router-dom';
 
-export default function ConvocatoriaDetailsModal({ isOpen, onClose, data, isAuthenticated }) {
+export default function ConvocatoriaDetailsModal({ isOpen, onClose, data, isAuthenticated, onPostular }) {
     const navigate = useNavigate();
 
     if (!data) return null;
@@ -22,12 +22,17 @@ export default function ConvocatoriaDetailsModal({ isOpen, onClose, data, isAuth
         }
     };
 
-    const handlePostular = () => {
+    const handlePostularClick = () => {
+        if (onPostular) {
+            onPostular();
+            return;
+        }
+
         if (!isAuthenticated) {
             navigate('/login');
             return;
         }
-        // Logic for authenticated user
+        // Logic for authenticated user (if not passed via prop)
         console.log("Postular click from Modal - Authenticated");
     };
 
@@ -154,7 +159,7 @@ export default function ConvocatoriaDetailsModal({ isOpen, onClose, data, isAuth
                         size="xs"
                         className="bg-[#B40032] hover:bg-[#8a0026] text-white focus:ring-[#B40032]"
                         disabled={cuposCompletos}
-                        onClick={handlePostular}
+                        onClick={handlePostularClick}
                     >
                         {cuposCompletos ? "Cupos completos" : "Postular ahora"}
                     </Button>

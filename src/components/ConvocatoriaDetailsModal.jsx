@@ -1,4 +1,6 @@
 import { Modal, Button, Badge } from 'flowbite-react';
+import { HiX } from 'react-icons/hi';
+import { formatLocalDate } from '../utils/formatDate';
 import { useNavigate } from 'react-router-dom';
 
 export default function ConvocatoriaDetailsModal({ isOpen, onClose, data, isAuthenticated, onPostular }) {
@@ -109,19 +111,19 @@ export default function ConvocatoriaDetailsModal({ isOpen, onClose, data, isAuth
                                     <div className="space-y-2 text-xs">
                                         <div className="flex justify-between">
                                             <span className="text-gray-400">Publicación:</span>
-                                            <span className="font-medium text-gray-200">{new Date(data.fechaPublicacion).toLocaleDateString('es-PE')}</span>
+                                            <span className="font-medium text-gray-200">{formatLocalDate(data.fechaPublicacion)}</span>
                                         </div>
                                         <div className="flex justify-between">
                                             <span className="text-gray-400">Cierre:</span>
-                                            <span className="font-medium text-gray-200">{new Date(data.fechaCierre).toLocaleDateString('es-PE')}</span>
+                                            <span className="font-medium text-gray-200">{formatLocalDate(data.fechaCierre)}</span>
                                         </div>
                                         <div className="flex justify-between text-green-400 bg-green-900/20 p-1.5 rounded-lg border border-green-900/30">
                                             <span>Inicio Postulación:</span>
-                                            <span className="font-bold">{new Date(data.fechaInicioPostulacion).toLocaleDateString('es-PE')}</span>
+                                            <span className="font-bold">{formatLocalDate(data.fechaInicioPostulacion)}</span>
                                         </div>
                                         <div className="flex justify-between text-red-400 bg-red-900/20 p-1.5 rounded-lg border border-red-900/30">
                                             <span>Fin Postulación:</span>
-                                            <span className="font-bold">{new Date(data.fechaFinPostulacion).toLocaleDateString('es-PE')}</span>
+                                            <span className="font-bold">{formatLocalDate(data.fechaFinPostulacion)}</span>
                                         </div>
                                     </div>
                                 </div>

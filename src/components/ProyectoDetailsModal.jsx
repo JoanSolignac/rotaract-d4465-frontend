@@ -1,5 +1,7 @@
 import { Modal, Button, Badge } from 'flowbite-react';
 import { useNavigate } from 'react-router-dom';
+import { HiX } from 'react-icons/hi';
+import { formatLocalDate } from '../utils/formatDate';
 
 export default function ProyectoDetailsModal({ isOpen, onClose, data, isAuthenticated }) {
     const navigate = useNavigate();
@@ -37,7 +39,7 @@ export default function ProyectoDetailsModal({ isOpen, onClose, data, isAuthenti
     };
 
     const handleVerClub = () => {
-        navigate(`/club/${data.clubId}`);
+        navigate(`/ club / ${data.clubId} `);
         onClose();
     };
 
@@ -117,19 +119,19 @@ export default function ProyectoDetailsModal({ isOpen, onClose, data, isAuthenti
                                     <div className="space-y-2 text-xs">
                                         <div className="flex justify-between text-blue-400 bg-blue-900/20 p-1.5 rounded-lg border border-blue-900/30">
                                             <span>Inicio Postulación:</span>
-                                            <span className="font-bold">{new Date(data.fechaInicioPostulacion).toLocaleDateString('es-PE')}</span>
+                                            <span className="font-bold">{formatLocalDate(data.fechaInicioPostulacion)}</span>
                                         </div>
                                         <div className="flex justify-between text-blue-400 bg-blue-900/20 p-1.5 rounded-lg border border-blue-900/30">
                                             <span>Fin Postulación:</span>
-                                            <span className="font-bold">{new Date(data.fechaFinPostulacion).toLocaleDateString('es-PE')}</span>
+                                            <span className="font-bold">{formatLocalDate(data.fechaFinPostulacion)}</span>
                                         </div>
                                         <div className="flex justify-between text-green-400 bg-green-900/20 p-1.5 rounded-lg border border-green-900/30">
                                             <span>Inicio Proyecto:</span>
-                                            <span className="font-bold">{new Date(data.fechaInicioProyecto).toLocaleDateString('es-PE')}</span>
+                                            <span className="font-bold">{formatLocalDate(data.fechaInicioProyecto)}</span>
                                         </div>
                                         <div className="flex justify-between text-green-400 bg-green-900/20 p-1.5 rounded-lg border border-green-900/30">
                                             <span>Fin Proyecto:</span>
-                                            <span className="font-bold">{new Date(data.fechaFinProyecto).toLocaleDateString('es-PE')}</span>
+                                            <span className="font-bold">{formatLocalDate(data.fechaFinProyecto)}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -144,8 +146,8 @@ export default function ProyectoDetailsModal({ isOpen, onClose, data, isAuthenti
                                     </div>
                                     <div className="w-full bg-neutral-700 rounded-full h-1.5 mb-2">
                                         <div
-                                            className={`h-1.5 rounded-full ${porcentajeCupos >= 100 ? 'bg-red-500' : 'bg-primary-600 shadow-[0_0_8px_rgba(226,15,122,0.6)]'}`}
-                                            style={{ width: `${porcentajeCupos}%` }}
+                                            className={`h - 1.5 rounded - full ${porcentajeCupos >= 100 ? 'bg-red-500' : 'bg-primary-600 shadow-[0_0_8px_rgba(226,15,122,0.6)]'} `}
+                                            style={{ width: `${porcentajeCupos}% ` }}
                                         ></div>
                                     </div>
                                     <p className="text-[10px] text-gray-400 text-right">

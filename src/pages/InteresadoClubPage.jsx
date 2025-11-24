@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Spinner, Badge, Button, Table } from 'flowbite-react';
 import { motion } from 'framer-motion';
+import { formatLocalDate, parseLocalDate } from '../utils/formatDate';
 import InteresadoNavbar from '../components/InteresadoNavbar';
 
 /**
@@ -123,11 +124,14 @@ export default function InteresadoClubPage() {
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                         </svg>
                                         <span className="text-base">
-                                            Fundado: {new Date(club.fechaCreacion).toLocaleDateString('es-PE', {
-                                                year: 'numeric',
-                                                month: 'long',
-                                                day: 'numeric'
-                                            })}
+                                            Fundado: {(() => {
+                                                const date = parseLocalDate(club.fechaCreacion);
+                                                return date.toLocaleDateString('es-PE', {
+                                                    year: 'numeric',
+                                                    month: 'long',
+                                                    day: 'numeric'
+                                                });
+                                            })()}
                                         </span>
                                     </div>
                                 </div>
@@ -282,7 +286,7 @@ export default function InteresadoClubPage() {
                                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                                         </svg>
                                                         <span>
-                                                            Postulación: {new Date(convocatoria.fechaInicioPostulacion).toLocaleDateString('es-PE')} - {new Date(convocatoria.fechaFinPostulacion).toLocaleDateString('es-PE')}
+                                                            Postulación: {formatLocalDate(convocatoria.fechaInicioPostulacion)} - {formatLocalDate(convocatoria.fechaFinPostulacion)}
                                                         </span>
                                                     </div>
                                                 </div>
@@ -315,7 +319,7 @@ export default function InteresadoClubPage() {
                                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                                         </svg>
                                                         <span>
-                                                            Proyecto: {new Date(proyecto.fechaInicioProyecto).toLocaleDateString('es-PE')} - {new Date(proyecto.fechaFinProyecto).toLocaleDateString('es-PE')}
+                                                            Proyecto: {formatLocalDate(proyecto.fechaInicioProyecto)} - {formatLocalDate(proyecto.fechaFinProyecto)}
                                                         </span>
                                                     </div>
                                                 </div>

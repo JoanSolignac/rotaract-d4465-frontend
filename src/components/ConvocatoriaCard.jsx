@@ -1,6 +1,7 @@
-import { Button, Badge } from 'flowbite-react';
+import { Badge, Button } from 'flowbite-react';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
+import { formatLocalDate } from '../utils/formatDate';
 
 export default function ConvocatoriaCard({ convocatoria, onVerDetalles, onPostular }) {
     const navigate = useNavigate();
@@ -83,7 +84,7 @@ export default function ConvocatoriaCard({ convocatoria, onVerDetalles, onPostul
                         <span className="font-medium">Postulación:</span>
                     </div>
                     <p className="ml-6 text-xs text-gray-500">
-                        {new Date(convocatoria.fechaInicioPostulacion).toLocaleDateString('es-PE')} - {new Date(convocatoria.fechaFinPostulacion).toLocaleDateString('es-PE')}
+                        {formatLocalDate(convocatoria.fechaInicioPostulacion)} - {formatLocalDate(convocatoria.fechaFinPostulacion)}
                     </p>
                 </div>
 

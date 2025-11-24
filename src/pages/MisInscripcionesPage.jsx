@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { Badge, Button, Spinner, TextInput, Select } from 'flowbite-react';
 import { motion } from 'framer-motion';
 import Swal from 'sweetalert2';
+import { parseLocalDate } from '../utils/formatDate';
 import InteresadoNavbar from '../components/InteresadoNavbar';
 
 export default function MisInscripcionesPage() {
@@ -208,11 +209,14 @@ export default function MisInscripcionesPage() {
                                             <div className="flex justify-between items-start mb-2">
                                                 <Badge color={getBadgeColor(inscripcion.estado)} className="rounded-md">{inscripcion.estado}</Badge>
                                                 <span className="text-xs text-gray-500">
-                                                    {new Date(inscripcion.fechaRegistro).toLocaleDateString('es-PE', {
-                                                        year: 'numeric',
-                                                        month: 'short',
-                                                        day: 'numeric'
-                                                    })}
+                                                    {(() => {
+                                                        const date = parseLocalDate(inscripcion.fechaRegistro);
+                                                        return date.toLocaleDateString('es-PE', {
+                                                            year: 'numeric',
+                                                            month: 'short',
+                                                            day: 'numeric'
+                                                        });
+                                                    })()}
                                                 </span>
                                             </div>
                                             <h3 className="text-xl font-bold text-white mb-2">{inscripcion.referenciaTitulo}</h3>

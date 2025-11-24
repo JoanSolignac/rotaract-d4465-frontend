@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { Card, Spinner, TextInput, Select, Button } from 'flowbite-react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { formatLocalDate } from '../utils/formatDate';
 import { HiSearch, HiFilter, HiLocationMarker, HiCalendar } from 'react-icons/hi';
 import AppNavbar from '../components/Navbar';
 
@@ -234,7 +235,7 @@ export default function ClubsPage() {
                                                     <div className="flex items-center justify-center text-gray-400">
                                                         <HiCalendar className="w-5 h-5 mr-2 text-yellow-500" />
                                                         <span className="text-sm">
-                                                            Fundado: {new Date(club.fechaCreacion).toLocaleDateString()}
+                                                            Fundado: {formatLocalDate(club.fechaCreacion)}
                                                         </span>
                                                     </div>
                                                 </div>

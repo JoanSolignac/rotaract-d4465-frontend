@@ -1,4 +1,6 @@
-import { Button, Badge } from 'flowbite-react';
+import { Badge, Button } from 'flowbite-react';
+import { HiCalendar, HiClock, HiUsers } from 'react-icons/hi';
+import { formatLocalDate } from '../utils/formatDate';
 import { useNavigate } from 'react-router-dom';
 
 export default function ProyectoCard({ proyecto, onVerDetalles }) {
@@ -78,7 +80,7 @@ export default function ProyectoCard({ proyecto, onVerDetalles }) {
                             <span className="font-medium">Postulación:</span>
                         </div>
                         <p className="ml-6 text-xs">
-                            {new Date(proyecto.fechaInicioPostulacion).toLocaleDateString('es-PE')} - {new Date(proyecto.fechaFinPostulacion).toLocaleDateString('es-PE')}
+                            {formatLocalDate(proyecto.fechaInicioPostulacion)} - {formatLocalDate(proyecto.fechaFinPostulacion)}
                         </p>
                     </div>
 
@@ -91,7 +93,7 @@ export default function ProyectoCard({ proyecto, onVerDetalles }) {
                             <span className="font-medium">Ejecución:</span>
                         </div>
                         <p className="ml-6 text-xs">
-                            {new Date(proyecto.fechaInicioProyecto).toLocaleDateString('es-PE')} - {new Date(proyecto.fechaFinProyecto).toLocaleDateString('es-PE')}
+                            {formatLocalDate(proyecto.fechaInicioProyecto)} - {formatLocalDate(proyecto.fechaFinProyecto)}
                         </p>
                     </div>
                 </div>

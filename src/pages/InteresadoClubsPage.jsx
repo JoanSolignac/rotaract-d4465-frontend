@@ -1,7 +1,8 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Spinner, TextInput, Select, Button } from 'flowbite-react';
-import { Link } from 'react-router-dom';
+import { Spinner, TextInput, Select } from 'flowbite-react';
 import { motion } from 'framer-motion';
+import { parseLocalDate } from '../utils/formatDate';
+import AppNavbar from '../components/Navbar';
 import InteresadoNavbar from '../components/InteresadoNavbar';
 
 export default function InteresadoClubsPage() {
@@ -239,11 +240,14 @@ export default function InteresadoClubsPage() {
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                                 </svg>
                                                 <span className="text-xs">
-                                                    Fundado: {new Date(club.fechaCreacion).toLocaleDateString('es-PE', {
-                                                        year: 'numeric',
-                                                        month: 'long',
-                                                        day: 'numeric'
-                                                    })}
+                                                    Fundado: {(() => {
+                                                        const date = parseLocalDate(club.fechaCreacion);
+                                                        return date.toLocaleDateString('es-PE', {
+                                                            year: 'numeric',
+                                                            month: 'long',
+                                                            day: 'numeric'
+                                                        });
+                                                    })()}
                                                 </span>
                                             </div>
 

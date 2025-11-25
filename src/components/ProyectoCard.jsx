@@ -3,7 +3,7 @@ import { HiCalendar, HiClock, HiUsers } from 'react-icons/hi';
 import { formatLocalDate } from '../utils/formatDate';
 import { useNavigate } from 'react-router-dom';
 
-export default function ProyectoCard({ proyecto, onVerDetalles }) {
+export default function ProyectoCard({ proyecto, onVerDetalles, onPostular }) {
     const navigate = useNavigate();
     const isAuthenticated = Boolean(localStorage.getItem("accessToken"));
     const cuposCompletos = proyecto.inscritos >= proyecto.cupoMaximo;
@@ -27,6 +27,11 @@ export default function ProyectoCard({ proyecto, onVerDetalles }) {
     };
 
     const handlePostular = () => {
+        if (onPostular) {
+            onPostular(proyecto);
+            return;
+        }
+
         if (!isAuthenticated) {
             navigate('/login');
             return;

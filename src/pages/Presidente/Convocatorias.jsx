@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { Pagination, Spinner } from 'flowbite-react';
 import { motion } from 'framer-motion';
-import Swal from 'sweetalert2';
 import useFetchConvocatoriasPresidente from '../../hooks/useFetchConvocatoriasPresidente';
 import ConvocatoriaCardPresidente from '../../components/ConvocatoriaCardPresidente';
 import InscripcionesModal from '../../components/InscripcionesModal';
+import EditarConvocatoriaModal from '../../components/EditarConvocatoriaModal';
 
 /**
  * Convocatorias Page - President Module
@@ -15,10 +15,11 @@ export default function Convocatorias() {
     const [currentPage, setCurrentPage] = useState(0);
     const pageSize = 12;
 
-    const { data, loading, error } = useFetchConvocatoriasPresidente(currentPage, pageSize);
+    const { data, loading, error, refetch } = useFetchConvocatoriasPresidente(currentPage, pageSize);
 
     // Modal state
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isInscripcionesModalOpen, setIsInscripcionesModalOpen] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [selectedConvocatoria, setSelectedConvocatoria] = useState(null);
 
     const handlePageChange = (page) => {
@@ -28,24 +29,26 @@ export default function Convocatorias() {
 
     const handleVerInscripciones = (convocatoria) => {
         setSelectedConvocatoria(convocatoria);
-        setIsModalOpen(true);
+        setIsInscripcionesModalOpen(true);
     };
 
     const handleEditar = (convocatoria) => {
-        // Placeholder for edit functionality
-        Swal.fire({
-            title: 'Editar Convocatoria',
-            text: `La funcionalidad de edición para "${convocatoria.titulo}" estará disponible próximamente.`,
-            icon: 'info',
-            confirmButtonColor: '#E20F7A',
-            background: '#171717',
-            color: '#ffffff'
-        });
+        setSelectedConvocatoria(convocatoria);
+        setIsEditModalOpen(true);
     };
 
-    const handleCloseModal = () => {
-        setIsModalOpen(false);
+    const handleCloseInscripcionesModal = () => {
+        setIsInscripcionesModalOpen(false);
         setSelectedConvocatoria(null);
+    };
+
+    const handleCloseEditModal = () => {
+        setIsEditModalOpen(false);
+        setSelectedConvocatoria(null);
+    };
+
+    const handleConvocatoriaUpdated = () => {
+        refetch();
     };
 
     // Animation variants
@@ -175,9 +178,17 @@ export default function Convocatorias() {
 
             {/* Inscripciones Modal */}
             <InscripcionesModal
-                isOpen={isModalOpen}
-                onClose={handleCloseModal}
+                isOpen={isInscripcionesModalOpen}
+                onClose={handleCloseInscripcionesModal}
                 convocatoria={selectedConvocatoria}
+            />
+
+            {/* Editar Convocatoria Modal */}
+            <EditarConvocatoriaModal
+                isOpen={isEditModalOpen}
+                onClose={handleCloseEditModal}
+                convocatoria={selectedConvocatoria}
+                onUpdated={handleConvocatoriaUpdated}
             />
         </div>
     );

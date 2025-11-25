@@ -2,30 +2,19 @@ import { useState } from 'react';
 import { Pagination, TextInput, Button, Spinner } from 'flowbite-react';
 import { motion } from 'framer-motion';
 import { HiSearch } from 'react-icons/hi';
-import useFetchProyectosPresidente from '../../hooks/useFetchProyectosPresidente';
-import ProyectoDetailsModal from '../../components/ProyectoDetailsModal';
-import InscripcionesProyectoModal from '../../components/InscripcionesProyectoModal';
-import EditarProyectoModal from '../../components/EditarProyectoModal';
-import GestionarAsistenciaModal from '../../components/GestionarAsistenciaModal';
-import ProyectoCardPresidente from '../../components/ProyectoCardPresidente';
+import useFetchProyectosDisponibles from '../../hooks/useFetchProyectosDisponibles';
+import ProyectoDisponibleModal from '../../components/ProyectoDisponibleModal';
+import ProyectoCard from '../../components/ProyectoCard';
 
-/**
- * Proyectos Page - President Module
- * Manage projects: list, view details, edit, manage inscripciones, attendance
- */
-export default function Proyectos() {
+export default function SocioProyectos() {
     const [currentPage, setCurrentPage] = useState(0);
     const [searchQuery, setSearchQuery] = useState('');
-    const pageSize = 10;
+    const pageSize = 12; // Adjusted for grid
 
-    const { data, loading, error, refetch } = useFetchProyectosPresidente(currentPage, pageSize, searchQuery);
+    const { data, loading, error, refetch } = useFetchProyectosDisponibles(currentPage, pageSize, searchQuery);
 
-    // Modal states
-    const [detailsModalOpen, setDetailsModalOpen] = useState(false);
-    const [inscripcionesModalOpen, setInscripcionesModalOpen] = useState(false);
-    const [editModalOpen, setEditModalOpen] = useState(false);
-    const [asistenciaModalOpen, setAsistenciaModalOpen] = useState(false);
     const [selectedProyecto, setSelectedProyecto] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const handlePageChange = (page) => {
         setCurrentPage(page - 1);
@@ -37,40 +26,24 @@ export default function Proyectos() {
         setCurrentPage(0);
     };
 
-    const openModal = (modalSetter, proyecto) => {
+    const handleVerProyecto = (proyecto) => {
         setSelectedProyecto(proyecto);
-        modalSetter(true);
+        setIsModalOpen(true);
     };
 
-    const closeModal = (modalSetter) => {
-        modalSetter(false);
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
         setSelectedProyecto(null);
     };
 
-    const handleProyectoUpdated = () => {
+    const handlePostulacionSuccess = () => {
         refetch();
-    };
-
-    const getEstadoBadgeColor = (estado) => {
-        switch (estado?.toUpperCase()) {
-            case 'ACTIVO':
-            case 'ABIERTO':
-                return 'success';
-            case 'FINALIZADO':
-            case 'CERRADO':
-                return 'failure';
-            case 'EN_PROGRESO':
-                return 'warning';
-            default:
-                return 'gray';
-        }
     };
 
     const proyectos = data?.content || [];
     const totalPages = data?.totalPages || 1;
     const totalElements = data?.totalElements || 0;
 
-    // Animation variants
     const containerVariants = {
         hidden: { opacity: 0 },
         visible: {
@@ -79,13 +52,8 @@ export default function Proyectos() {
         }
     };
 
-    const itemVariants = {
-        hidden: { opacity: 0, y: 10 },
-        visible: { opacity: 1, y: 0 }
-    };
-
     return (
-        <div className="pt-20 pb-16">
+        <div className="pt-24 pb-16 min-h-screen bg-[#050506]">
             <div className="max-w-7xl mx-auto px-4">
                 {/* Header */}
                 <motion.div
@@ -95,10 +63,10 @@ export default function Proyectos() {
                     className="mb-8"
                 >
                     <h1 className="text-3xl md:text-4xl font-extrabold text-white mb-4">
-                        Gestión de Proyectos
+                        Proyectos Disponibles
                     </h1>
                     <p className="text-base md:text-lg text-gray-400 max-w-3xl">
-                        Administra los proyectos de tu club, gestiona inscripciones y asistencia.
+                        Encuentra proyectos en tu club y participa activamente.
                     </p>
                 </motion.div>
 
@@ -109,7 +77,7 @@ export default function Proyectos() {
                             id="search"
                             type="text"
                             icon={HiSearch}
-                            placeholder="Buscar proyecto..."
+                            placeholder="Buscar por título..."
                             value={searchQuery}
                             onChange={handleSearch}
                             className="[&>div>input]:bg-neutral-900 [&>div>input]:border-neutral-700 [&>div>input]:text-white [&>div>input]:placeholder-gray-500 [&>div>input:focus]:border-primary-600 [&>div>input:focus]:ring-primary-600"
@@ -140,31 +108,27 @@ export default function Proyectos() {
                 {/* Empty State */}
                 {!loading && !error && proyectos.length === 0 && (
                     <div className="text-center py-20 bg-neutral-900 rounded-2xl border border-neutral-800">
-                        <p className="text-gray-400 text-lg">No se encontraron proyectos.</p>
+                        <p className="text-gray-400 text-lg">No se encontraron proyectos disponibles.</p>
                     </div>
                 )}
 
-                {/* Proyectos Grid */}
+                {/* Grid */}
                 {!loading && !error && proyectos.length > 0 && (
-                    <>
-                        <motion.div
-                            variants={containerVariants}
-                            initial="hidden"
-                            animate="visible"
-                            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-12"
-                        >
-                            {proyectos.map((proyecto) => (
-                                <motion.div key={proyecto.id} variants={itemVariants}>
-                                    <ProyectoCardPresidente
-                                        proyecto={proyecto}
-                                        onVerInscripciones={() => openModal(setInscripcionesModalOpen, proyecto)}
-                                        onEditar={() => openModal(setEditModalOpen, proyecto)}
-                                        onAsistencia={() => openModal(setAsistenciaModalOpen, proyecto)}
-                                    />
-                                </motion.div>
-                            ))}
-                        </motion.div>
-                    </>
+                    <motion.div
+                        variants={containerVariants}
+                        initial="hidden"
+                        animate="visible"
+                        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+                    >
+                        {proyectos.map((proyecto) => (
+                            <ProyectoCard
+                                key={proyecto.id}
+                                proyecto={proyecto}
+                                onVerDetalles={handleVerProyecto}
+                                onPostular={handleVerProyecto} // Opens the same modal for now
+                            />
+                        ))}
+                    </motion.div>
                 )}
 
                 {/* Pagination */}
@@ -181,29 +145,12 @@ export default function Proyectos() {
                 )}
             </div>
 
-            {/* Modals */}
-            <ProyectoDetailsModal
-                isOpen={detailsModalOpen}
-                onClose={() => closeModal(setDetailsModalOpen)}
+            {/* Modal */}
+            <ProyectoDisponibleModal
+                isOpen={isModalOpen}
+                onClose={handleCloseModal}
                 proyecto={selectedProyecto}
-            />
-
-            <InscripcionesProyectoModal
-                isOpen={inscripcionesModalOpen}
-                onClose={() => closeModal(setInscripcionesModalOpen)}
-                proyecto={selectedProyecto}
-            />
-
-            <EditarProyectoModal
-                isOpen={editModalOpen}
-                onClose={() => closeModal(setEditModalOpen)}
-                proyecto={selectedProyecto}
-                onUpdated={handleProyectoUpdated}
-            />
-
-            <GestionarAsistenciaModal
-                isOpen={asistenciaModalOpen}
-                onClose={() => closeModal(setAsistenciaModalOpen)}
+                onPostulacionSuccess={handlePostulacionSuccess}
             />
         </div>
     );

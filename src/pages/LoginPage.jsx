@@ -53,6 +53,8 @@ export default function LoginPage() {
                 navigate('/interesado');
             } else if (data.rol === 'PRESIDENTE') {
                 navigate('/presidente');
+            } else if (data.rol === 'SOCIO') {
+                navigate('/socio');
             } else {
                 navigate('/convocatorias');
             }

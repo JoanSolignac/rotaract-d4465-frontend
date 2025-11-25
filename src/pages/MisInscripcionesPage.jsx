@@ -222,15 +222,16 @@ export default function MisInscripcionesPage() {
                                             <h3 className="text-xl font-bold text-white mb-2">{inscripcion.referenciaTitulo}</h3>
                                             <p className="text-sm text-gray-400 mb-4">Tipo: {inscripcion.tipo}</p>
 
-                                            <Button
-                                                color="failure"
-                                                size="sm"
-                                                onClick={() => handleCancelar(inscripcion.referenciaId, inscripcion.tipo)}
-                                                disabled={inscripcion.estado === 'ACEPTADO' || inscripcion.estado === 'RECHAZADO' || inscripcion.estado === 'CANCELADO'}
-                                                className={`w-full text-white ${inscripcion.estado === 'PENDIENTE' ? 'bg-primary-600 hover:bg-primary-700 border-none focus:ring-primary-500 shadow-lg shadow-primary-600/20' : 'bg-neutral-800 border-neutral-700'}`}
-                                            >
-                                                {inscripcion.estado === 'PENDIENTE' ? 'Cancelar Inscripción' : 'No se puede cancelar'}
-                                            </Button>
+                                            {inscripcion.estado === 'PENDIENTE' && (
+                                                <Button
+                                                    color="failure"
+                                                    size="sm"
+                                                    onClick={() => handleCancelar(inscripcion.referenciaId, inscripcion.tipo)}
+                                                    className="w-full bg-primary-600 hover:bg-primary-700 text-white border-none focus:ring-primary-500 shadow-lg shadow-primary-600/20"
+                                                >
+                                                    Cancelar Inscripción
+                                                </Button>
+                                            )}
                                         </motion.div>
                                     ))}
                                 </div>

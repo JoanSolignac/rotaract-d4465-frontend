@@ -13,11 +13,18 @@ import InteresadoConvocatoriasPage from './pages/InteresadoConvocatoriasPage';
 import MisInscripcionesPage from './pages/MisInscripcionesPage';
 
 // President Module Imports
+// President Module Imports
 import PresidenteLayout from './layouts/PresidenteLayout';
 import PresidenteInicio from './pages/Presidente/Inicio';
 import PresidenteConvocatorias from './pages/Presidente/Convocatorias';
 import PresidenteProyectos from './pages/Presidente/Proyectos';
 import PresidenteMiembros from './pages/Presidente/Miembros';
+
+// Socio Module Imports
+import SocioLayout from './layouts/SocioLayout';
+import SocioInicio from './pages/Socio/Inicio';
+import SocioProyectos from './pages/Socio/Proyectos';
+import SocioInscripciones from './pages/Socio/Inscripciones';
 
 /**
  * AppRouter Component
@@ -49,6 +56,13 @@ export default function AppRouter() {
                     <Route path="convocatorias" element={<PresidenteConvocatorias />} />
                     <Route path="proyectos" element={<PresidenteProyectos />} />
                     <Route path="miembros" element={<PresidenteMiembros />} />
+                </Route>
+
+                {/* Socio Routes */}
+                <Route path="/socio" element={<SocioLayout />}>
+                    <Route index element={<SocioInicio />} />
+                    <Route path="proyectos" element={<SocioProyectos />} />
+                    <Route path="inscripciones" element={<SocioInscripciones />} />
                 </Route>
             </Routes>
         </BrowserRouter>

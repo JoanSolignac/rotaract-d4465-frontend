@@ -102,6 +102,19 @@ export async function put(path, body) {
 }
 
 /**
+ * PATCH request helper
+ * @param {string} path - API endpoint path
+ * @param {object} body - Request body
+ * @returns {Promise<object>} Parsed JSON response
+ */
+export async function patch(path, body) {
+    return fetchJson(path, {
+        method: 'PATCH',
+        body: JSON.stringify(body),
+    });
+}
+
+/**
  * DELETE request helper
  * @param {string} path - API endpoint path
  * @returns {Promise<object>} Parsed JSON response

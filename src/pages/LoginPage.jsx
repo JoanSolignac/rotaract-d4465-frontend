@@ -48,11 +48,15 @@ export default function LoginPage() {
             localStorage.setItem('rol', data.rol);
             localStorage.setItem('nombre', data.nombre);
 
+            // Redirect based on user role
             if (data.rol === 'INTERESADO') {
                 navigate('/interesado');
+            } else if (data.rol === 'PRESIDENTE') {
+                navigate('/presidente');
             } else {
                 navigate('/convocatorias');
             }
+
 
         } catch (err) {
             Swal.fire({

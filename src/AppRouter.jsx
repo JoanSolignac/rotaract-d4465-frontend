@@ -12,6 +12,13 @@ import InteresadoClubPage from './pages/InteresadoClubPage';
 import InteresadoConvocatoriasPage from './pages/InteresadoConvocatoriasPage';
 import MisInscripcionesPage from './pages/MisInscripcionesPage';
 
+// President Module Imports
+import PresidenteLayout from './layouts/PresidenteLayout';
+import PresidenteInicio from './pages/Presidente/Inicio';
+import PresidenteConvocatorias from './pages/Presidente/Convocatorias';
+import PresidenteProyectos from './pages/Presidente/Proyectos';
+import PresidenteMiembros from './pages/Presidente/Miembros';
+
 /**
  * AppRouter Component
  * Main application router configuration
@@ -35,7 +42,16 @@ export default function AppRouter() {
                 <Route path="/interesado/club/:id" element={<InteresadoClubPage />} />
                 <Route path="/interesado/convocatorias" element={<InteresadoConvocatoriasPage />} />
                 <Route path="/interesado/inscripciones" element={<MisInscripcionesPage />} />
+
+                {/* Presidente Routes */}
+                <Route path="/presidente" element={<PresidenteLayout />}>
+                    <Route index element={<PresidenteInicio />} />
+                    <Route path="convocatorias" element={<PresidenteConvocatorias />} />
+                    <Route path="proyectos" element={<PresidenteProyectos />} />
+                    <Route path="miembros" element={<PresidenteMiembros />} />
+                </Route>
             </Routes>
         </BrowserRouter>
     );
 }
+

@@ -10,8 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "flowbite": "^4.0.1",
-    "flowbite-react": "^0.12.10",
+    "flowbite": "^1.6.5",
+    "flowbite-react": "^0.6.4",
     "framer-motion": "^12.23.24",
     "prop-types": "^15.8.1",
     "react": "^19.2.0",

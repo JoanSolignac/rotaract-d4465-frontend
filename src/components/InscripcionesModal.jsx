@@ -1,22 +1,24 @@
 import { useState, useMemo, useEffect } from 'react';
-import { Modal, Table, TextInput, Select, Spinner, Pagination, Badge } from 'flowbite-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Modal, Table, TextInput, Select, Spinner, Pagination, Badge, Button } from 'flowbite-react';
 import { HiSearch } from 'react-icons/hi';
 import PropTypes from 'prop-types';
+import Swal from 'sweetalert2';
 import useFetchInscripciones from '../hooks/useFetchInscripciones';
+import { post } from '../services/fetchClient';
 
 /**
  * InscripcionesModal Component
  * Modal to display and manage inscripciones for a convocatoria
- * Features: search, filter by estado, pagination
+ * Features: search, filter by estado, pagination, accept/reject actions
  */
 export default function InscripcionesModal({ isOpen, onClose, convocatoria }) {
     const [currentPage, setCurrentPage] = useState(0);
     const [searchQuery, setSearchQuery] = useState('');
     const [estadoFilter, setEstadoFilter] = useState('TODOS');
+    const [processingId, setProcessingId] = useState(null);
     const pageSize = 10;
 
-    const { data, loading, error } = useFetchInscripciones(
+    const { data, loading, error, refetch } = useFetchInscripciones(
         convocatoria?.id,
         currentPage,
         pageSize
@@ -28,6 +30,7 @@ export default function InscripcionesModal({ isOpen, onClose, convocatoria }) {
             setCurrentPage(0);
             setSearchQuery('');
             setEstadoFilter('TODOS');
+            setProcessingId(null);
         }
     }, [isOpen]);
 
@@ -50,9 +53,9 @@ export default function InscripcionesModal({ isOpen, onClose, convocatoria }) {
 
     const getEstadoBadgeColor = (estado) => {
         switch (estado?.toUpperCase()) {
-            case 'APROBADO':
+            case 'ACEPTADA':
                 return 'success';
-            case 'RECHAZADO':
+            case 'RECHAZADA':
                 return 'failure';
             case 'PENDIENTE':
                 return 'warning';
@@ -86,11 +89,68 @@ export default function InscripcionesModal({ isOpen, onClose, convocatoria }) {
         setCurrentPage(page - 1);
     };
 
+    const handleAccion = async (inscripcionId, accion) => {
+        const isAceptar = accion === 'aceptar';
+        const actionVerb = isAceptar ? 'aceptar' : 'rechazar';
+        const confirmColor = isAceptar ? '#31C48D' : '#F05252'; // success green : failure red
+
+        const result = await Swal.fire({
+            title: '¿Confirmar acción?',
+            text: `¿Estás seguro de ${actionVerb} esta inscripción?`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: confirmColor,
+            cancelButtonColor: '#6B7280',
+            confirmButtonText: isAceptar ? 'Sí, aceptar' : 'Sí, rechazar',
+            cancelButtonText: 'Cancelar',
+            background: '#171717',
+            color: '#ffffff'
+        });
+
+        if (result.isConfirmed) {
+            try {
+                setProcessingId(inscripcionId);
+
+                // Construct endpoint path
+                const path = `/api/v1/convocatorias/${convocatoria.id}/inscripciones/${inscripcionId}/${actionVerb}`;
+
+                // Call API
+                await post(path, {}); // Empty body as it's a POST action without payload
+
+                // Show success alert
+                await Swal.fire({
+                    title: '¡Éxito!',
+                    text: 'Inscripción actualizada correctamente',
+                    icon: 'success',
+                    confirmButtonColor: '#E20F7A',
+                    background: '#171717',
+                    color: '#ffffff'
+                });
+
+                // Refetch data to update list
+                refetch();
+
+            } catch (err) {
+                console.error(`Error al ${actionVerb} inscripción:`, err);
+                Swal.fire({
+                    title: 'Error',
+                    text: err.message || `No se pudo ${actionVerb} la inscripción`,
+                    icon: 'error',
+                    confirmButtonColor: '#E20F7A',
+                    background: '#171717',
+                    color: '#ffffff'
+                });
+            } finally {
+                setProcessingId(null);
+            }
+        }
+    };
+
     return (
         <Modal
             show={isOpen}
             onClose={onClose}
-            size="5xl"
+            size="6xl"
             popup
             className="[&>div>div]:bg-neutral-900 [&>div>div]:border-neutral-800"
         >
@@ -147,8 +207,8 @@ export default function InscripcionesModal({ isOpen, onClose, convocatoria }) {
                             >
                                 <option value="TODOS">Todos</option>
                                 <option value="PENDIENTE">Pendiente</option>
-                                <option value="APROBADO">Aprobado</option>
-                                <option value="RECHAZADO">Rechazado</option>
+                                <option value="ACEPTADA">Aceptada</option>
+                                <option value="RECHAZADA">Rechazada</option>
                             </Select>
                         </div>
                     </div>
@@ -193,6 +253,7 @@ export default function InscripcionesModal({ isOpen, onClose, convocatoria }) {
                                     <Table.HeadCell className="bg-neutral-800 text-gray-300">Tipo</Table.HeadCell>
                                     <Table.HeadCell className="bg-neutral-800 text-gray-300">Estado</Table.HeadCell>
                                     <Table.HeadCell className="bg-neutral-800 text-gray-300">Fecha Registro</Table.HeadCell>
+                                    <Table.HeadCell className="bg-neutral-800 text-gray-300 text-right">Acciones</Table.HeadCell>
                                 </Table.Head>
                                 <Table.Body className="divide-y divide-neutral-800">
                                     {filteredInscripciones.map((inscripcion) => (
@@ -216,6 +277,34 @@ export default function InscripcionesModal({ isOpen, onClose, convocatoria }) {
                                             </Table.Cell>
                                             <Table.Cell className="text-gray-400 text-sm">
                                                 {formatDateTime(inscripcion.fechaRegistro)}
+                                            </Table.Cell>
+                                            <Table.Cell className="text-right">
+                                                <div className="flex justify-end gap-2">
+                                                    {(inscripcion.estado === 'PENDIENTE' || inscripcion.estado === 'RECHAZADO' || inscripcion.estado === 'RECHAZADA') && (
+                                                        <Button
+                                                            size="xs"
+                                                            color="success"
+                                                            className="text-white px-2 py-1"
+                                                            onClick={() => handleAccion(inscripcion.id, 'aceptar')}
+                                                            disabled={processingId === inscripcion.id}
+                                                            isProcessing={processingId === inscripcion.id}
+                                                        >
+                                                            Aceptar
+                                                        </Button>
+                                                    )}
+                                                    {(inscripcion.estado === 'PENDIENTE' || inscripcion.estado === 'ACEPTADA' || inscripcion.estado === 'APROBADO') && (
+                                                        <Button
+                                                            size="xs"
+                                                            color="failure"
+                                                            className="text-white px-2 py-1"
+                                                            onClick={() => handleAccion(inscripcion.id, 'rechazar')}
+                                                            disabled={processingId === inscripcion.id}
+                                                            isProcessing={processingId === inscripcion.id}
+                                                        >
+                                                            Rechazar
+                                                        </Button>
+                                                    )}
+                                                </div>
                                             </Table.Cell>
                                         </Table.Row>
                                     ))}
@@ -249,3 +338,4 @@ InscripcionesModal.propTypes = {
     onClose: PropTypes.func.isRequired,
     convocatoria: PropTypes.object,
 };
+

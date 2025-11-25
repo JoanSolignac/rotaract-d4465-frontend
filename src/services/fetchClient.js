@@ -46,8 +46,20 @@ export async function fetchJson(path, options = {}) {
             throw new Error(errorMessage);
         }
 
-        // Parse and return JSON response
-        return await response.json();
+        // Check if response is JSON
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+            return await response.json();
+        } else {
+            // Return text if not JSON (or empty)
+            const text = await response.text();
+            try {
+                // Try parsing just in case it's JSON without header
+                return JSON.parse(text);
+            } catch (e) {
+                return { message: text }; // Return as object with message
+            }
+        }
     } catch (error) {
         // Re-throw error for component-level handling
         throw error;

@@ -2,7 +2,12 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
 export default function MetricsSection() {
-    const [metrics, setMetrics] = useState({ clubes: 0, convocatorias: 0, proyectos: 0 });
+    const [metrics, setMetrics] = useState({
+        totalUsuarios: 0,
+        clubes: 0,
+        convocatorias: 0,
+        proyectos: 0
+    });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -11,17 +16,20 @@ export default function MetricsSection() {
             try {
                 setLoading(true);
 
-                const [clubesRes, convocatoriasRes, proyectosRes] = await Promise.all([
+                const [usuariosRes, clubesRes, convocatoriasRes, proyectosRes] = await Promise.all([
+                    fetch('https://rotaractd4465api.up.railway.app/api/v1/miembros/public/total'),
                     fetch('https://rotaractd4465api.up.railway.app/api/v1/clubs/public'),
                     fetch('https://rotaractd4465api.up.railway.app/api/v1/convocatorias/public'),
                     fetch('https://rotaractd4465api.up.railway.app/api/v1/proyectos/public'),
                 ]);
 
+                const usuariosData = await usuariosRes.json();
                 const clubesData = await clubesRes.json();
                 const convocatoriasData = await convocatoriasRes.json();
                 const proyectosData = await proyectosRes.json();
 
                 setMetrics({
+                    totalUsuarios: usuariosData.totalUsuarios ?? 0,
                     clubes: clubesData.totalElements ?? 0,
                     convocatorias: convocatoriasData.totalElements ?? 0,
                     proyectos: proyectosData.totalElements ?? 0,
@@ -40,6 +48,17 @@ export default function MetricsSection() {
     }, []);
 
     const metricCards = [
+        {
+            title: 'Total de Usuarios',
+            value: metrics.totalUsuarios,
+            icon: (
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+            ),
+            color: "text-white",
+            bg: "bg-primary-600"
+        },
         {
             title: 'Clubes Registrados',
             value: metrics.clubes,
@@ -106,7 +125,7 @@ export default function MetricsSection() {
                 )}
 
                 {!loading && !error && (
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                         {metricCards.map((metric, index) => (
                             <motion.div
                                 key={index}

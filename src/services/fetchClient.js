@@ -14,6 +14,7 @@ const BASE_URL = 'https://rotaractd4465api.up.railway.app';
 export async function fetchJson(path, options = {}) {
     const token = localStorage.getItem('accessToken');
 
+    // Build headers ensuring Content-Type is always set for requests with body
     const headers = {
         'Content-Type': 'application/json',
         ...options.headers,
@@ -24,10 +25,16 @@ export async function fetchJson(path, options = {}) {
         headers['Authorization'] = `Bearer ${token}`;
     }
 
+    // Build config ensuring body is preserved
     const config = {
-        ...options,
+        method: options.method || 'GET',
         headers,
     };
+
+    // Only add body if it exists (important: add it AFTER spreading options)
+    if (options.body !== undefined) {
+        config.body = options.body;
+    }
 
     try {
         const response = await fetch(`${BASE_URL}${path}`, config);

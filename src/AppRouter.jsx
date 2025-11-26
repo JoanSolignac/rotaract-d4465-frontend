@@ -31,6 +31,13 @@ import SocioInicio from './pages/Socio/Inicio';
 import SocioProyectos from './pages/Socio/Proyectos';
 import SocioInscripciones from './pages/Socio/Inscripciones';
 
+// Representante Module Imports
+import RepresentanteLayout from './layouts/RepresentanteLayout';
+import RepresentanteDashboard from './pages/Representante/Dashboard';
+import RepresentanteClubsPage from './pages/Representante/ClubsPage';
+import CreateClubPage from './pages/Representante/CreateClubPage';
+import ClubDetailPage from './pages/Representante/ClubDetailPage';
+
 /**
  * AppRouter Component
  * Main application router configuration
@@ -73,6 +80,14 @@ export default function AppRouter() {
                     <Route index element={<SocioInicio />} />
                     <Route path="proyectos" element={<SocioProyectos />} />
                     <Route path="inscripciones" element={<SocioInscripciones />} />
+                </Route>
+
+                {/* Representante Routes */}
+                <Route path="/representante" element={<RepresentanteLayout />}>
+                    <Route index element={<RepresentanteDashboard />} />
+                    <Route path="clubes" element={<RepresentanteClubsPage />} />
+                    <Route path="clubes/crear" element={<CreateClubPage />} />
+                    <Route path="clubes/:id" element={<ClubDetailPage />} />
                 </Route>
             </Routes>
         </BrowserRouter>

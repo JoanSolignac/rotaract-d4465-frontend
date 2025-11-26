@@ -6,6 +6,8 @@ import ConvocatoriasPage from './pages/ConvocatoriasPage';
 import ProyectosPage from './pages/ProyectosPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import ResetPasswordPage from './pages/ResetPasswordPage';
 import InteresadoDashboard from './pages/InteresadoDashboard';
 import InteresadoClubsPage from './pages/InteresadoClubsPage';
 import InteresadoClubPage from './pages/InteresadoClubPage';
@@ -45,6 +47,8 @@ export default function AppRouter() {
                 <Route path="/proyectos" element={<ProyectosPage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
+                <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+                <Route path="/reset-password" element={<ResetPasswordPage />} />
 
                 {/* Interesado Routes */}
                 <Route path="/interesado" element={<InteresadoDashboard />} />

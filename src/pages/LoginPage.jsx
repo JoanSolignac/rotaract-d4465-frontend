@@ -134,6 +134,11 @@ export default function LoginPage() {
                                         {showPassword ? <HiEyeOff className="w-5 h-5" /> : <HiEye className="w-5 h-5" />}
                                     </button>
                                 </div>
+                                <div className="text-right mt-1">
+                                    <Link to="/forgot-password" className="text-sm text-primary-500 hover:text-primary-400 hover:underline transition-colors">
+                                        ¿Olvidaste tu contraseña?
+                                    </Link>
+                                </div>
                             </div>
 
                             <Button

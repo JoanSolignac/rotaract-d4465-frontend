@@ -1,12 +1,12 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Pagination, TextInput, Button, Spinner } from 'flowbite-react';
 import { motion } from 'framer-motion';
-import { HiSearch } from 'react-icons/hi';
+import { HiSearch, HiPlus } from 'react-icons/hi';
 import useFetchProyectosPresidente from '../../hooks/useFetchProyectosPresidente';
 import ProyectoDetailsModal from '../../components/ProyectoDetailsModal';
 import InscripcionesProyectoModal from '../../components/InscripcionesProyectoModal';
 import EditarProyectoModal from '../../components/EditarProyectoModal';
-import GestionarAsistenciaModal from '../../components/GestionarAsistenciaModal';
 import ProyectoCardPresidente from '../../components/ProyectoCardPresidente';
 
 /**
@@ -14,6 +14,7 @@ import ProyectoCardPresidente from '../../components/ProyectoCardPresidente';
  * Manage projects: list, view details, edit, manage inscripciones, attendance
  */
 export default function Proyectos() {
+    const navigate = useNavigate();
     const [currentPage, setCurrentPage] = useState(0);
     const [searchQuery, setSearchQuery] = useState('');
     const pageSize = 10;
@@ -24,7 +25,6 @@ export default function Proyectos() {
     const [detailsModalOpen, setDetailsModalOpen] = useState(false);
     const [inscripcionesModalOpen, setInscripcionesModalOpen] = useState(false);
     const [editModalOpen, setEditModalOpen] = useState(false);
-    const [asistenciaModalOpen, setAsistenciaModalOpen] = useState(false);
     const [selectedProyecto, setSelectedProyecto] = useState(null);
 
     const handlePageChange = (page) => {
@@ -104,7 +104,7 @@ export default function Proyectos() {
 
                 {/* Search and Stats */}
                 <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
-                    <div className="w-full md:w-96">
+                    <div className="w-full md:w-96 flex gap-2">
                         <TextInput
                             id="search"
                             type="text"
@@ -112,8 +112,15 @@ export default function Proyectos() {
                             placeholder="Buscar proyecto..."
                             value={searchQuery}
                             onChange={handleSearch}
-                            className="[&>div>input]:bg-neutral-900 [&>div>input]:border-neutral-700 [&>div>input]:text-white [&>div>input]:placeholder-gray-500 [&>div>input:focus]:border-primary-600 [&>div>input:focus]:ring-primary-600"
+                            className="flex-1 [&>div>input]:bg-neutral-900 [&>div>input]:border-neutral-700 [&>div>input]:text-white [&>div>input]:placeholder-gray-500 [&>div>input:focus]:border-primary-600 [&>div>input:focus]:ring-primary-600"
                         />
+                        <Button
+                            className="bg-[#8B0036] hover:bg-[#6d002b] text-white border-none whitespace-nowrap"
+                            onClick={() => navigate('/presidente/proyectos/crear')}
+                        >
+                            <HiPlus className="mr-2 h-5 w-5" />
+                            Agregar
+                        </Button>
                     </div>
                     <div className="text-gray-400 text-sm">
                         Mostrando <span className="font-bold text-white">{proyectos.length}</span> de{' '}
@@ -159,7 +166,7 @@ export default function Proyectos() {
                                         proyecto={proyecto}
                                         onVerInscripciones={() => openModal(setInscripcionesModalOpen, proyecto)}
                                         onEditar={() => openModal(setEditModalOpen, proyecto)}
-                                        onAsistencia={() => openModal(setAsistenciaModalOpen, proyecto)}
+                                        onAsistencia={() => navigate(`/presidente/proyectos/${proyecto.id}/asistencia`)}
                                     />
                                 </motion.div>
                             ))}
@@ -201,10 +208,6 @@ export default function Proyectos() {
                 onUpdated={handleProyectoUpdated}
             />
 
-            <GestionarAsistenciaModal
-                isOpen={asistenciaModalOpen}
-                onClose={() => closeModal(setAsistenciaModalOpen)}
-            />
         </div>
     );
 }

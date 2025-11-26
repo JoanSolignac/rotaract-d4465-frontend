@@ -18,7 +18,10 @@ import PresidenteLayout from './layouts/PresidenteLayout';
 import PresidenteInicio from './pages/Presidente/Inicio';
 import PresidenteConvocatorias from './pages/Presidente/Convocatorias';
 import PresidenteProyectos from './pages/Presidente/Proyectos';
-import PresidenteMiembros from './pages/Presidente/Miembros';
+import ClubMembersPage from './pages/Presidente/ClubMembersPage';
+import AsistenciaPage from './pages/Presidente/AsistenciaPage';
+import CreateProjectPage from './pages/Presidente/CreateProjectPage';
+import CreateConvocatoriaPage from './pages/Presidente/CreateConvocatoriaPage';
 
 // Socio Module Imports
 import SocioLayout from './layouts/SocioLayout';
@@ -55,7 +58,10 @@ export default function AppRouter() {
                     <Route index element={<PresidenteInicio />} />
                     <Route path="convocatorias" element={<PresidenteConvocatorias />} />
                     <Route path="proyectos" element={<PresidenteProyectos />} />
-                    <Route path="miembros" element={<PresidenteMiembros />} />
+                    <Route path="proyectos/:proyectoId/asistencia" element={<AsistenciaPage />} />
+                    <Route path="miembros" element={<ClubMembersPage />} />
+                    <Route path="proyectos/crear" element={<CreateProjectPage />} />
+                    <Route path="convocatorias/crear" element={<CreateConvocatoriaPage />} />
                 </Route>
 
                 {/* Socio Routes */}

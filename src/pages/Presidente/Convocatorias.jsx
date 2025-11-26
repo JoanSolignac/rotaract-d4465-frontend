@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import { Pagination, Spinner } from 'flowbite-react';
+import { useNavigate } from 'react-router-dom';
+import { Pagination, Spinner, TextInput, Button } from 'flowbite-react';
+import { HiSearch, HiPlus } from 'react-icons/hi';
 import { motion } from 'framer-motion';
 import useFetchConvocatoriasPresidente from '../../hooks/useFetchConvocatoriasPresidente';
 import ConvocatoriaCardPresidente from '../../components/ConvocatoriaCardPresidente';
@@ -12,7 +14,9 @@ import EditarConvocatoriaModal from '../../components/EditarConvocatoriaModal';
  * Allows editing and viewing inscripciones
  */
 export default function Convocatorias() {
+    const navigate = useNavigate();
     const [currentPage, setCurrentPage] = useState(0);
+    const [searchQuery, setSearchQuery] = useState('');
     const pageSize = 12;
 
     const { data, loading, error, refetch } = useFetchConvocatoriasPresidente(currentPage, pageSize);
@@ -71,7 +75,11 @@ export default function Convocatorias() {
         }
     };
 
-    const convocatorias = data?.content || [];
+    const allConvocatorias = data?.content || [];
+    const convocatorias = allConvocatorias.filter(c =>
+        (c.titulo && c.titulo.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (c.descripcion && c.descripcion.toLowerCase().includes(searchQuery.toLowerCase()))
+    );
     const totalPages = data?.totalPages || 1;
     const totalElements = data?.totalElements || 0;
 
@@ -93,12 +101,30 @@ export default function Convocatorias() {
                     </p>
                 </motion.div>
 
-                {/* Results Count */}
-                <div className="mb-8 flex items-center justify-between">
-                    <p className="text-gray-400">
+                {/* Search and Stats */}
+                <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
+                    <div className="w-full md:w-96 flex gap-2">
+                        <TextInput
+                            id="search"
+                            type="text"
+                            icon={HiSearch}
+                            placeholder="Buscar convocatoria..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="flex-1 [&>div>input]:bg-neutral-900 [&>div>input]:border-neutral-700 [&>div>input]:text-white [&>div>input]:placeholder-gray-500 [&>div>input:focus]:border-primary-600 [&>div>input:focus]:ring-primary-600"
+                        />
+                        <Button
+                            className="bg-[#8B0036] hover:bg-[#6d002b] text-white border-none whitespace-nowrap"
+                            onClick={() => navigate('/presidente/convocatorias/crear')}
+                        >
+                            <HiPlus className="mr-2 h-5 w-5" />
+                            Agregar
+                        </Button>
+                    </div>
+                    <div className="text-gray-400 text-sm">
                         Mostrando <span className="font-bold text-white">{convocatorias.length}</span> de{' '}
                         <span className="font-bold text-white">{totalElements}</span> convocatorias
-                    </p>
+                    </div>
                 </div>
 
                 {/* Loading State */}

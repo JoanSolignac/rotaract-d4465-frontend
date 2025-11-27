@@ -73,6 +73,7 @@ export default function NavbarPresidente() {
         { path: '/presidente/convocatorias', label: 'Convocatorias' },
         { path: '/presidente/proyectos', label: 'Proyectos' },
         { path: '/presidente/miembros', label: 'Miembros' },
+        { path: '/presidente/mi-club/editar', label: 'Editar Club' },
     ];
 
     return (

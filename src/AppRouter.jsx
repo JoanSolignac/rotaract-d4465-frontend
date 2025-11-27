@@ -25,6 +25,7 @@ import ClubMembersPage from './pages/Presidente/ClubMembersPage';
 import AsistenciaPage from './pages/Presidente/AsistenciaPage';
 import CreateProjectPage from './pages/Presidente/CreateProjectPage';
 import CreateConvocatoriaPage from './pages/Presidente/CreateConvocatoriaPage';
+import EditClubPage from './pages/Presidente/EditClubPage';
 
 // Socio Module Imports
 import SocioLayout from './layouts/SocioLayout';
@@ -76,6 +77,7 @@ export default function AppRouter() {
                     <Route path="proyectos" element={<PresidenteProyectos />} />
                     <Route path="proyectos/:proyectoId/asistencia" element={<AsistenciaPage />} />
                     <Route path="miembros" element={<ClubMembersPage />} />
+                    <Route path="mi-club/editar" element={<EditClubPage />} />
                     <Route path="proyectos/crear" element={<CreateProjectPage />} />
                     <Route path="convocatorias/crear" element={<CreateConvocatoriaPage />} />
                 </Route>

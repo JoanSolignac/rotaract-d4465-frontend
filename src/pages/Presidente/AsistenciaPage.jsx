@@ -19,6 +19,7 @@ export default function AsistenciaPage() {
     const { proyectoId } = useParams();
     const navigate = useNavigate();
     const [asistencias, setAsistencias] = useState([]);
+    const [proyecto, setProyecto] = useState(null);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState(null);
@@ -29,9 +30,31 @@ export default function AsistenciaPage() {
 
     useEffect(() => {
         if (userRole === "PRESIDENTE") {
+            fetchProyecto();
             fetchAsistencias();
         }
     }, [proyectoId]);
+
+    const fetchProyecto = async () => {
+        try {
+            const response = await fetch(
+                `https://rotaractd4465api.up.railway.app/api/v1/proyectos/public/${proyectoId}`,
+                {
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                }
+            );
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Estado del proyecto:', data.estadoProyecto);
+                setProyecto(data);
+            }
+        } catch (err) {
+            console.error('Error al cargar el proyecto:', err);
+        }
+    };
 
     const fetchAsistencias = async () => {
         setLoading(true);
@@ -39,7 +62,7 @@ export default function AsistenciaPage() {
 
         try {
             const response = await fetch(
-                `https://rotaractd4465api.up.railway.app/api/v1/proyectos/${proyectoId}/asistencia/lista`,
+                `https://rotaractd4465api.up.railway.app/api/v1/proyectos/${proyectoId}/asistencias`,
                 {
                     headers: {
                         "Content-Type": "application/json",
@@ -226,11 +249,12 @@ export default function AsistenciaPage() {
                             <Button
                                 onClick={guardarAsistencia}
                                 isProcessing={saving}
-                                disabled={saving}
-                                className="bg-[#8B0036] hover:bg-[#6d002a] text-white"
+                                disabled={saving || proyecto?.estadoProyecto === 'FINALIZADO'}
+                                className="bg-[#8B0036] hover:bg-[#6d002a] text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                                title={proyecto?.estadoProyecto === 'FINALIZADO' ? 'No se puede guardar asistencia en proyectos finalizados' : ''}
                             >
                                 <HiSave className="mr-2 h-5 w-5" />
-                                Guardar Asistencia
+                                {proyecto?.estadoProyecto === 'FINALIZADO' ? 'Proyecto Finalizado' : 'Guardar Asistencia'}
                             </Button>
                         </div>
                     </motion.div>

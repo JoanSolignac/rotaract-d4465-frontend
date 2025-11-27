@@ -46,7 +46,7 @@ export default function ProyectoCard({ proyecto, onVerDetalles, onPostular }) {
         <div className="bg-neutral-900 rounded-2xl p-6 shadow-lg shadow-black/20 border border-neutral-800 hover:border-primary-600/50 transition-all duration-300 h-full flex flex-col group">
             <div className="flex flex-col h-full">
                 {/* Title */}
-                <h3 className="text-xl font-bold text-white mb-3 leading-tight line-clamp-2 min-h-[3.5rem] group-hover:text-primary-400 transition-colors">
+                <h3 className="text-xl font-bold text-white mb-3 leading-tight group-hover:text-primary-400 transition-colors" title={proyecto.titulo}>
                     {proyecto.titulo}
                 </h3>
 

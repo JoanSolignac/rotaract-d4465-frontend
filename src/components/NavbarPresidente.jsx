@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import useWebSocketNotifications from '../hooks/useWebSocketNotifications';
+import NotificacionesBell from './NotificacionesBell';
 
 /**
  * NavbarPresidente Component
@@ -11,17 +13,23 @@ export default function NavbarPresidente() {
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const [userName, setUserName] = useState('');
     const [userEmail, setUserEmail] = useState('');
+    const [userId, setUserId] = useState(null);
     const location = useLocation();
     const navigate = useNavigate();
     const dropdownRef = useRef(null);
+
+    // WebSocket notifications
+    const { notifications, unreadCount, markAsRead, clearAll } = useWebSocketNotifications(userId);
 
     useEffect(() => {
         // Get user data from localStorage
         const nombre = localStorage.getItem('nombre');
         const correo = localStorage.getItem('correo');
+        const id = localStorage.getItem('userId');
 
         setUserName(nombre || 'Presidente');
         setUserEmail(correo || '');
+        setUserId(id ? parseInt(id, 10) : null);
     }, []);
 
     // Close dropdown when clicking outside
@@ -101,8 +109,16 @@ export default function NavbarPresidente() {
                 </button>
 
                 {/* Desktop Profile Dropdown */}
-                <div className="hidden md:flex md:order-2 items-center gap-3" ref={dropdownRef}>
-                    <div className="relative">
+                <div className="hidden md:flex md:order-2 items-center gap-3">
+                    {/* Notification Bell */}
+                    <NotificacionesBell
+                        notifications={notifications}
+                        unreadCount={unreadCount}
+                        onMarkAsRead={markAsRead}
+                        onClearAll={clearAll}
+                    />
+
+                    <div className="relative" ref={dropdownRef}>
                         <button
                             onClick={() => setIsProfileOpen(!isProfileOpen)}
                             className="flex items-center gap-2 text-sm bg-neutral-800 rounded-full hover:bg-neutral-700 focus:ring-4 focus:ring-neutral-600 transition-all pr-3"
@@ -162,8 +178,8 @@ export default function NavbarPresidente() {
                                 <Link
                                     to={link.path}
                                     className={`relative py-2 px-1 transition-colors ${isActive(link.path)
-                                            ? 'text-primary-400'
-                                            : 'text-gray-300 hover:text-primary-400'
+                                        ? 'text-primary-400'
+                                        : 'text-gray-300 hover:text-primary-400'
                                         }`}
                                 >
                                     {link.label}
@@ -196,8 +212,8 @@ export default function NavbarPresidente() {
                                         <Link
                                             to={link.path}
                                             className={`block py-2 px-3 rounded-lg ${isActive(link.path)
-                                                    ? 'bg-primary-900/20 text-primary-400'
-                                                    : 'text-gray-300 hover:bg-neutral-800'
+                                                ? 'bg-primary-900/20 text-primary-400'
+                                                : 'text-gray-300 hover:bg-neutral-800'
                                                 }`}
                                             onClick={() => setIsMenuOpen(false)}
                                         >

@@ -37,6 +37,7 @@ import RepresentanteDashboard from './pages/Representante/Dashboard';
 import RepresentanteClubsPage from './pages/Representante/ClubsPage';
 import CreateClubPage from './pages/Representante/CreateClubPage';
 import ClubDetailPage from './pages/Representante/ClubDetailPage';
+import RDTransferPage from './pages/Representante/RDTransferPage';
 
 /**
  * AppRouter Component
@@ -88,6 +89,7 @@ export default function AppRouter() {
                     <Route path="clubes" element={<RepresentanteClubsPage />} />
                     <Route path="clubes/crear" element={<CreateClubPage />} />
                     <Route path="clubes/:id" element={<ClubDetailPage />} />
+                    <Route path="transferir" element={<RDTransferPage />} />
                 </Route>
             </Routes>
         </BrowserRouter>

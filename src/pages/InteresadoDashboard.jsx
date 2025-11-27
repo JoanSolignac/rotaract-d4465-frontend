@@ -2,8 +2,15 @@ import { Card, Button } from 'flowbite-react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import InteresadoNavbar from '../components/InteresadoNavbar';
+import useWebSocketNotifications from '../hooks/useWebSocketNotifications';
+import useSessionValidation from '../hooks/useSessionValidation';
 
 export default function InteresadoDashboard() {
+    // Initialize WebSocket notifications and session validation
+    const userId = localStorage.getItem('userId');
+    useWebSocketNotifications(userId);
+    useSessionValidation(30000); // Check every 30 seconds
+
     return (
         <motion.div
             initial={{ opacity: 0 }}

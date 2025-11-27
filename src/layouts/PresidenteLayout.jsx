@@ -1,10 +1,13 @@
 import { useEffect } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import NavbarPresidente from '../components/NavbarPresidente';
+import useWebSocketNotifications from '../hooks/useWebSocketNotifications';
+import useSessionValidation from '../hooks/useSessionValidation';
 
 /**
  * Layout wrapper for President module pages
  * Handles authentication and role-based access control
+ * Integrates WebSocket notifications and session validation
  */
 export default function PresidenteLayout() {
     const navigate = useNavigate();
@@ -26,6 +29,11 @@ export default function PresidenteLayout() {
             return;
         }
     }, [navigate]);
+
+    // Initialize WebSocket notifications and session validation
+    const userId = localStorage.getItem('userId');
+    useWebSocketNotifications(userId);
+    useSessionValidation(30000); // Check every 30 seconds
 
     return (
         <div className="min-h-screen flex flex-col bg-[#050506]">

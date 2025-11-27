@@ -9,6 +9,10 @@
   <body>
     <div id="root"></div>
     <script>
+      // Polyfill for stompjs library compatibility
+      window.global = window;
+    </script>
+    <script>
       window.onerror = function(message, source, lineno, colno, error) {
         const div = document.createElement('div');
         div.style.color = 'red';

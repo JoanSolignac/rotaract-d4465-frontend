@@ -152,6 +152,16 @@ export default function SocioNavbar() {
                                         </span>
                                     </div>
                                     <div className="py-1">
+                                        <Link
+                                            to="/perfil/editar"
+                                            onClick={() => setIsProfileOpen(false)}
+                                            className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-neutral-700 flex items-center gap-2 transition-colors"
+                                        >
+                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                            </svg>
+                                            Editar Perfil
+                                        </Link>
                                         <button
                                             onClick={() => {
                                                 handleLogout();
@@ -261,6 +271,16 @@ export default function SocioNavbar() {
                                         </div>
                                         <p className="text-xs text-primary-600 dark:text-primary-400 font-medium">Rol: {userRole}</p>
                                     </div>
+                                    <Link
+                                        to="/perfil/editar"
+                                        onClick={() => setIsMenuOpen(false)}
+                                        className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:focus:ring-primary-900 font-medium rounded-lg text-sm px-4 py-2.5 text-center flex items-center justify-center gap-2 transition-colors shadow-lg shadow-primary-600/20 mb-2"
+                                    >
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                        </svg>
+                                        Editar Perfil
+                                    </Link>
                                     <button
                                         onClick={() => {
                                             handleLogout();

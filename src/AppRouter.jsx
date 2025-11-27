@@ -13,6 +13,7 @@ import InteresadoClubsPage from './pages/InteresadoClubsPage';
 import InteresadoClubPage from './pages/InteresadoClubPage';
 import InteresadoConvocatoriasPage from './pages/InteresadoConvocatoriasPage';
 import MisInscripcionesPage from './pages/MisInscripcionesPage';
+import EditProfilePage from './pages/EditProfilePage';
 
 // President Module Imports
 // President Module Imports
@@ -57,6 +58,9 @@ export default function AppRouter() {
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/forgot-password" element={<ForgotPasswordPage />} />
                 <Route path="/reset-password" element={<ResetPasswordPage />} />
+
+                {/* Shared Authenticated Routes */}
+                <Route path="/perfil/editar" element={<EditProfilePage />} />
 
                 {/* Interesado Routes */}
                 <Route path="/interesado" element={<InteresadoDashboard />} />

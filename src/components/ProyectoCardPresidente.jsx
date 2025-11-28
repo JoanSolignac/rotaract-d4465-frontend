@@ -108,9 +108,14 @@ export default function ProyectoCardPresidente({ proyecto, onVerInscripciones, o
                     <Button
                         color="light"
                         size="sm"
-                        className="w-full bg-neutral-800 hover:bg-neutral-700 text-white border-neutral-700 transition-colors"
+                        className="w-full bg-neutral-800 hover:bg-neutral-700 text-white border-neutral-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         onClick={() => onEditar(proyecto)}
-                        disabled={false}
+                        disabled={proyecto.estadoProyecto === 'FINALIZADO' || proyecto.estadoProyecto === 'EN_EJECUCION'}
+                        title={
+                            proyecto.estadoProyecto === 'FINALIZADO' || proyecto.estadoProyecto === 'EN_EJECUCION'
+                                ? 'No se puede editar un proyecto finalizado o en ejecución'
+                                : 'Editar proyecto'
+                        }
                     >
                         <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />

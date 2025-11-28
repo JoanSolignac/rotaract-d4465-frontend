@@ -21,8 +21,11 @@ const isValidId = (id) => {
     return Number.isInteger(num) && num > 0;
 };
 
+import { useWebSocket } from '../../contexts/WebSocketContext';
+
 export default function ClubMembersPage() {
     const navigate = useNavigate();
+    const { forceLogout } = useWebSocket();
     const [miembros, setMiembros] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [clubId, setClubId] = useState(null);
@@ -345,21 +348,13 @@ export default function ClubMembersPage() {
                     // ========================================
                     // ÉXITO: Cerrar sesión automáticamente
                     // ========================================
-                    await Swal.fire({
-                        title: '¡Transferido!',
-                        text: 'La presidencia ha sido transferida exitosamente. Cerrando sesión...',
-                        icon: 'success',
-                        confirmButtonColor: '#8B0036',
-                        background: '#1f2937',
-                        color: '#fff',
-                        timer: 2000,
-                        timerProgressBar: true,
-                        showConfirmButton: false
-                    });
-
-                    console.log('🔒 Limpiando localStorage y redirigiendo...');
-                    localStorage.clear();
-                    navigate('/login');
+                    // ========================================
+                    // ÉXITO: Cerrar sesión con protocolo de seguridad
+                    // ========================================
+                    forceLogout(
+                        '¡Transferencia Exitosa!',
+                        'Has transferido la presidencia correctamente. Tu rol se actualizará a SOCIO.'
+                    );
 
                 } catch (err) {
                     console.error('╔════════════════════════════════════════╗');

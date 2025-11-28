@@ -1,12 +1,11 @@
 import { useEffect } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import NavbarRepresentante from '../components/NavbarRepresentante';
-import useWebSocketNotifications from '../hooks/useWebSocketNotifications';
 
 /**
  * Layout wrapper for District Representative module pages
  * Handles authentication and role-based access control
- * Integrates WebSocket notifications for real-time updates
+ * WebSocket notifications are handled globally by WebSocketProvider
  */
 export default function RepresentanteLayout() {
     const navigate = useNavigate();
@@ -28,10 +27,6 @@ export default function RepresentanteLayout() {
             return;
         }
     }, [navigate]);
-
-    // Initialize WebSocket notifications
-    const userId = localStorage.getItem('userId');
-    useWebSocketNotifications(userId);
 
     return (
         <div className="min-h-screen flex flex-col bg-[#050506]">

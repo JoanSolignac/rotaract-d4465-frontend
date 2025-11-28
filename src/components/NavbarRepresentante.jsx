@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import useWebSocketNotifications from '../hooks/useWebSocketNotifications';
+import { useWebSocket } from '../contexts/WebSocketContext';
 import NotificacionesBell from './NotificacionesBell';
 
 /**
@@ -18,8 +18,9 @@ export default function NavbarRepresentante() {
     const navigate = useNavigate();
     const dropdownRef = useRef(null);
 
-    // WebSocket notifications
-    const { notifications, unreadCount, markAsRead, clearAll } = useWebSocketNotifications(userId);
+    // WebSocket notifications from context
+    const { notifications } = useWebSocket();
+    const unreadCount = notifications.filter(n => !n.read).length;
 
     useEffect(() => {
         // Get user data from localStorage
@@ -46,6 +47,7 @@ export default function NavbarRepresentante() {
 
     const handleLogout = () => {
         localStorage.clear();
+        window.dispatchEvent(new Event('auth-change'));
         navigate('/login');
     };
 
@@ -114,9 +116,8 @@ export default function NavbarRepresentante() {
                     <NotificacionesBell
                         notifications={notifications}
                         unreadCount={unreadCount}
-                        onMarkAsRead={markAsRead}
-                        onClearAll={clearAll}
                     />
+
 
                     <div className="relative" ref={dropdownRef}>
                         <button

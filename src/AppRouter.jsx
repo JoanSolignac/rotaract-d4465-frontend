@@ -1,4 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { WebSocketProvider } from './contexts/WebSocketContext';
+import { useAuth } from './hooks/useAuth';
+import NotificationToast from './components/NotificationToast';
 import LandingPage from './pages/LandingPage';
 import ClubsPage from './pages/ClubsPage';
 import ClubPage from './pages/ClubPage';
@@ -49,6 +52,17 @@ import RDTransferPage from './pages/Representante/RDTransferPage';
 export default function AppRouter() {
     return (
         <BrowserRouter>
+            <AppRoutesWithWebSocket />
+        </BrowserRouter>
+    );
+}
+
+function AppRoutesWithWebSocket() {
+    const { user } = useAuth();
+
+    return (
+        <WebSocketProvider user={user}>
+            <NotificationToast />
             <Routes>
                 {/* Public Routes */}
                 <Route path="/" element={<LandingPage />} />
@@ -100,7 +114,7 @@ export default function AppRouter() {
                     <Route path="transferir" element={<RDTransferPage />} />
                 </Route>
             </Routes>
-        </BrowserRouter>
+        </WebSocketProvider>
     );
 }
 

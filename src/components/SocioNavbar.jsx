@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useWebSocket } from '../contexts/WebSocketContext';
+import NotificacionesBell from './NotificacionesBell';
 
 export default function SocioNavbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -13,6 +15,10 @@ export default function SocioNavbar() {
     const location = useLocation();
     const navigate = useNavigate();
     const dropdownRef = useRef(null);
+
+    // WebSocket notifications
+    const { notifications } = useWebSocket();
+    const unreadCount = notifications.filter(n => !n.read).length;
 
     useEffect(() => {
         // Get user data from localStorage
@@ -39,6 +45,7 @@ export default function SocioNavbar() {
 
     const handleLogout = () => {
         localStorage.clear();
+        window.dispatchEvent(new Event('auth-change'));
         navigate('/login');
     };
 
@@ -103,6 +110,12 @@ export default function SocioNavbar() {
 
                 {/* Desktop Profile Dropdown & Theme Toggle */}
                 <div className="hidden md:flex md:order-2 items-center gap-3" ref={dropdownRef}>
+                    {/* Notification Bell */}
+                    <NotificacionesBell
+                        notifications={notifications}
+                        unreadCount={unreadCount}
+                    />
+
                     {/* Theme Toggle */}
                     <button
                         onClick={() => toggleTheme(theme === 'dark' ? 'light' : 'dark')}

@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useWebSocket } from '../contexts/WebSocketContext';
+import NotificacionesBell from './NotificacionesBell';
 
 export default function InteresadoNavbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -13,6 +15,10 @@ export default function InteresadoNavbar() {
     const location = useLocation();
     const navigate = useNavigate();
     const dropdownRef = useRef(null);
+
+    // WebSocket notifications
+    const { notifications } = useWebSocket();
+    const unreadCount = notifications.filter(n => !n.read).length;
 
     useEffect(() => {
         // Get user data from localStorage
@@ -39,6 +45,7 @@ export default function InteresadoNavbar() {
 
     const handleLogout = () => {
         localStorage.clear();
+        window.dispatchEvent(new Event('auth-change'));
         navigate('/login');
     };
 
@@ -103,6 +110,12 @@ export default function InteresadoNavbar() {
 
                 {/* Desktop Profile Dropdown & Theme Toggle */}
                 <div className="hidden md:flex md:order-2 items-center gap-3" ref={dropdownRef}>
+                    {/* Notification Bell */}
+                    <NotificacionesBell
+                        notifications={notifications}
+                        unreadCount={unreadCount}
+                    />
+
                     {/* Theme Toggle */}
                     <button
                         onClick={() => toggleTheme(theme === 'dark' ? 'light' : 'dark')}
@@ -180,8 +193,8 @@ export default function InteresadoNavbar() {
                                 <Link
                                     to={link.path}
                                     className={`relative py-2 px-1 transition-colors ${isActive(link.path)
-                                            ? 'text-primary-600 dark:text-primary-400'
-                                            : 'text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400'
+                                        ? 'text-primary-600 dark:text-primary-400'
+                                        : 'text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400'
                                         }`}
                                 >
                                     {link.label}
@@ -214,8 +227,8 @@ export default function InteresadoNavbar() {
                                         <Link
                                             to={link.path}
                                             className={`block py-2 px-3 rounded-lg ${isActive(link.path)
-                                                    ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400'
-                                                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-neutral-800'
+                                                ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400'
+                                                : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-neutral-800'
                                                 }`}
                                             onClick={() => setIsMenuOpen(false)}
                                         >

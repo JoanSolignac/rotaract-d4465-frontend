@@ -1,16 +1,13 @@
 import { Outlet } from 'react-router-dom';
 import SocioNavbar from '../components/SocioNavbar';
-import useWebSocketNotifications from '../hooks/useWebSocketNotifications';
 import useSessionValidation from '../hooks/useSessionValidation';
 
 /**
  * Layout wrapper for Socio module pages
- * Integrates WebSocket notifications and session validation
+ * WebSocket notifications are handled globally by WebSocketProvider
  */
 export default function SocioLayout() {
-    // Initialize WebSocket notifications and session validation
-    const userId = localStorage.getItem('userId');
-    useWebSocketNotifications(userId);
+    // Session validation
     useSessionValidation(30000); // Check every 30 seconds
 
     return (

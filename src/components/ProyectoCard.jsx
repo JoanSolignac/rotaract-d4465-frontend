@@ -134,11 +134,22 @@ export default function ProyectoCard({ proyecto, onVerDetalles, onPostular }) {
 
                     <Button
                         size="sm"
-                        className="w-full bg-primary-600 hover:bg-primary-700 text-white border-none focus:ring-primary-500 transition-colors shadow-lg shadow-primary-600/20"
-                        disabled={cuposCompletos || !disponible}
+                        className={`w-full border-none focus:ring-primary-500 transition-colors shadow-lg ${(cuposCompletos || !disponible || proyecto.estadoProyecto === 'CANCELADO' || proyecto.estadoProyecto === 'COMPLETADO')
+                                ? 'bg-neutral-700 text-gray-400 cursor-not-allowed'
+                                : 'bg-primary-600 hover:bg-primary-700 text-white shadow-primary-600/20'
+                            }`}
+                        disabled={cuposCompletos || !disponible || proyecto.estadoProyecto === 'CANCELADO' || proyecto.estadoProyecto === 'COMPLETADO'}
                         onClick={handlePostular}
                     >
-                        {cuposCompletos ? "Cupos completos" : !disponible ? "No disponible" : "Postular"}
+                        {cuposCompletos
+                            ? "Cupos completos"
+                            : proyecto.estadoProyecto === 'CANCELADO'
+                                ? "Cancelado"
+                                : proyecto.estadoProyecto === 'COMPLETADO'
+                                    ? "Finalizado"
+                                    : !disponible
+                                        ? "No disponible"
+                                        : "Postular"}
                     </Button>
                 </div>
             </div>

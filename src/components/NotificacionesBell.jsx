@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
  * Displays a notification bell with badge and dropdown menu
  * Shows recent notifications with mark-as-read functionality
  */
-export default function NotificacionesBell({ notifications, unreadCount, onMarkAsRead, onClearAll }) {
+export default function NotificacionesBell({ notifications, unreadCount, onMarkAsRead = () => { }, onClearAll = () => { } }) {
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef(null);
 
@@ -139,18 +139,18 @@ export default function NotificacionesBell({ notifications, unreadCount, onMarkA
                                 <div className="divide-y divide-neutral-700">
                                     {recentNotifications.map((notification) => (
                                         <motion.div
-                                            key={notification.id}
+                                            key={notification.id || notification.timestamp}
                                             initial={{ opacity: 0, x: -20 }}
                                             animate={{ opacity: 1, x: 0 }}
                                             className={`px-4 py-3 hover:bg-neutral-700/50 transition-colors cursor-pointer ${!notification.read ? 'bg-primary-900/10' : ''
                                                 }`}
-                                            onClick={() => onMarkAsRead(notification.id)}
+                                            onClick={() => onMarkAsRead(notification.id || notification.timestamp)}
                                         >
                                             <div className="flex items-start gap-3">
                                                 {/* Icon */}
                                                 <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${notification.tipo === 'success'
-                                                        ? 'bg-green-900/30 text-green-400'
-                                                        : 'bg-blue-900/30 text-blue-400'
+                                                    ? 'bg-green-900/30 text-green-400'
+                                                    : 'bg-blue-900/30 text-blue-400'
                                                     }`}>
                                                     {notification.tipo === 'success' ? (
                                                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -205,15 +205,15 @@ export default function NotificacionesBell({ notifications, unreadCount, onMarkA
 NotificacionesBell.propTypes = {
     notifications: PropTypes.arrayOf(
         PropTypes.shape({
-            id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+            id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
             titulo: PropTypes.string.isRequired,
             mensaje: PropTypes.string.isRequired,
             tipo: PropTypes.string,
             timestamp: PropTypes.string.isRequired,
-            read: PropTypes.bool.isRequired
+            read: PropTypes.bool
         })
     ).isRequired,
     unreadCount: PropTypes.number.isRequired,
-    onMarkAsRead: PropTypes.func.isRequired,
-    onClearAll: PropTypes.func.isRequired
+    onMarkAsRead: PropTypes.func,
+    onClearAll: PropTypes.func
 };

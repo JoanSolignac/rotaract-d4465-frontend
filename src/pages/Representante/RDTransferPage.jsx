@@ -105,18 +105,60 @@ export default function RDTransferPage() {
         }
 
         // Confirmation dialog
+        // Confirmation dialog with 10s countdown
+        let intervalId;
         const result = await Swal.fire({
-            title: '¿Está seguro?',
-            html: `¿Desea transferir la Representación Distrital a <strong>${selectedUser.nombre}</strong>?<br><br>
-                   <small class="text-gray-400">Esta acción cerrará su sesión automáticamente.</small>`,
-            icon: 'question',
+            title: '¿Transferir Representación?',
+            html: `
+                <div class="text-left">
+                    <p class="mb-4">¿Está seguro de transferir el cargo de <strong>Representante Distrital</strong> a <strong>${selectedUser.nombre}</strong>?</p>
+                    <ul class="list-disc pl-5 mb-4 text-sm text-gray-300">
+                        <li>Perderá sus privilegios de administrador inmediatamente.</li>
+                        <li>Su rol cambiará a SOCIO.</li>
+                        <li>Su sesión se cerrará automáticamente.</li>
+                    </ul>
+                    <p id="countdown" class="text-center font-bold text-amber-400 text-lg mt-4">
+                        Podrás confirmar en 10 segundos...
+                    </p>
+                </div>
+            `,
+            icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#8C1D40',
             cancelButtonColor: '#6B7280',
-            confirmButtonText: 'Sí, transferir',
+            confirmButtonText: 'Sí, transferir cargo',
             cancelButtonText: 'Cancelar',
             background: '#171717',
-            color: '#ffffff'
+            color: '#ffffff',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            didOpen: () => {
+                const confirmBtn = Swal.getConfirmButton();
+                confirmBtn.disabled = true;
+
+                let seconds = 10;
+                const countdownEl = document.getElementById('countdown');
+
+                intervalId = setInterval(() => {
+                    seconds--;
+                    if (countdownEl) {
+                        countdownEl.innerHTML = `Podrás confirmar en ${seconds} segundos...`;
+                    }
+
+                    if (seconds <= 0) {
+                        clearInterval(intervalId);
+                        confirmBtn.disabled = false;
+                        if (countdownEl) {
+                            countdownEl.innerHTML = 'Ya puede confirmar la transferencia.';
+                            countdownEl.classList.remove('text-amber-400');
+                            countdownEl.classList.add('text-green-400');
+                        }
+                    }
+                }, 1000);
+            },
+            willClose: () => {
+                if (intervalId) clearInterval(intervalId);
+            }
         });
 
         if (!result.isConfirmed) {

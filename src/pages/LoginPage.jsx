@@ -48,6 +48,17 @@ export default function LoginPage() {
             localStorage.setItem('rol', data.rol);
             localStorage.setItem('nombre', data.nombre);
 
+            // Store userId and clubId for WebSocket subscriptions
+            if (data.id) {
+                localStorage.setItem('userId', data.id.toString());
+            }
+            if (data.clubId) {
+                localStorage.setItem('clubId', data.clubId.toString());
+            }
+
+            // Dispatch custom event to update useAuth hook immediately
+            window.dispatchEvent(new Event('auth-change'));
+
             // Redirect based on user role
             if (data.rol === 'REPRESENTANTE DISTRITAL') {
                 navigate('/representante');
@@ -60,6 +71,7 @@ export default function LoginPage() {
             } else {
                 navigate('/convocatorias');
             }
+
 
 
         } catch (err) {

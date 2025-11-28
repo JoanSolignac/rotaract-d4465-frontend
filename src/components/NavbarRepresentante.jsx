@@ -18,8 +18,8 @@ export default function NavbarRepresentante() {
     const navigate = useNavigate();
     const dropdownRef = useRef(null);
 
-    // WebSocket notifications from context
-    const { notifications } = useWebSocket();
+    // WebSocket notifications
+    const { notifications, connected } = useWebSocket();
     const unreadCount = notifications.filter(n => !n.read).length;
 
     useEffect(() => {
@@ -116,6 +116,7 @@ export default function NavbarRepresentante() {
                     <NotificacionesBell
                         notifications={notifications}
                         unreadCount={unreadCount}
+                        connected={connected}
                     />
 
 

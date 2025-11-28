@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
  * Displays a notification bell with badge and dropdown menu
  * Shows recent notifications with mark-as-read functionality
  */
-export default function NotificacionesBell({ notifications, unreadCount, onMarkAsRead = () => { }, onClearAll = () => { } }) {
+export default function NotificacionesBell({ notifications, unreadCount, connected = false, onMarkAsRead = () => { }, onClearAll = () => { } }) {
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef(null);
 
@@ -47,7 +47,20 @@ export default function NotificacionesBell({ notifications, unreadCount, onMarkA
     const recentNotifications = notifications.slice(0, 10);
 
     return (
-        <div className="relative" ref={dropdownRef}>
+        <div className="relative flex items-center" ref={dropdownRef}>
+            {/* Connection Status Indicator */}
+            <div className="mr-2 flex items-center justify-center" title={connected ? "Conectado" : "Desconectado"}>
+                {connected ? (
+                    <svg className="w-3 h-3 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                    </svg>
+                ) : (
+                    <svg className="w-3 h-3 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                )}
+            </div>
+
             {/* Bell Button */}
             <button
                 onClick={() => setIsOpen(!isOpen)}
@@ -89,7 +102,7 @@ export default function NotificacionesBell({ notifications, unreadCount, onMarkA
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
                         transition={{ duration: 0.15 }}
-                        className="absolute right-0 mt-2 w-96 max-w-[calc(100vw-2rem)] bg-neutral-800 rounded-xl shadow-2xl border border-neutral-700 z-50 overflow-hidden"
+                        className="absolute right-0 top-full mt-2 w-96 max-w-[calc(100vw-2rem)] bg-neutral-800 rounded-xl shadow-2xl border border-neutral-700 z-50 overflow-hidden"
                     >
                         {/* Header */}
                         <div className="px-4 py-3 border-b border-neutral-700 bg-neutral-800/50 flex items-center justify-between">
@@ -214,6 +227,7 @@ NotificacionesBell.propTypes = {
         })
     ).isRequired,
     unreadCount: PropTypes.number.isRequired,
+    connected: PropTypes.bool,
     onMarkAsRead: PropTypes.func,
     onClearAll: PropTypes.func
 };

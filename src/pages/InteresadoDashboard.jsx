@@ -2,8 +2,8 @@ import { Card, Button } from 'flowbite-react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import InteresadoNavbar from '../components/InteresadoNavbar';
+import { useAuth } from '../hooks/useAuth';
 import useSessionValidation from '../hooks/useSessionValidation';
-import WebSocketDebug from '../components/WebSocketDebug';
 
 export default function InteresadoDashboard() {
     // Session validation
@@ -91,9 +91,6 @@ export default function InteresadoDashboard() {
                     </div>
                 </div>
             </div>
-
-            {/* Debug Widget - Remove in production */}
-            <WebSocketDebug />
         </motion.div>
     );
 }

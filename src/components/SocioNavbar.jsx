@@ -17,7 +17,7 @@ export default function SocioNavbar() {
     const dropdownRef = useRef(null);
 
     // WebSocket notifications
-    const { notifications } = useWebSocket();
+    const { notifications, connected } = useWebSocket();
     const unreadCount = notifications.filter(n => !n.read).length;
 
     useEffect(() => {
@@ -114,6 +114,7 @@ export default function SocioNavbar() {
                     <NotificacionesBell
                         notifications={notifications}
                         unreadCount={unreadCount}
+                        connected={connected}
                     />
 
                     {/* Theme Toggle */}

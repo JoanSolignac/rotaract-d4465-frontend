@@ -7,10 +7,18 @@ import PropTypes from 'prop-types';
  * Card component for displaying project details in President view
  * Adapted from ConvocatoriaCardPresidente for consistency
  */
-export default function ProyectoCardPresidente({ proyecto, onVerInscripciones, onEditar, onAsistencia }) {
+export default function ProyectoCardPresidente({
+    proyecto,
+    onVerInscripciones,
+    onEditar,
+    onAsistencia,
+    onCancelar,
+    CancelButton
+}) {
     const inscritos = proyecto?.inscritos ?? 0;
     const cupoMaximo = proyecto?.cupoMaximo ?? 0;
     const cuposCompletos = inscritos >= cupoMaximo;
+    const isCancelado = proyecto?.estadoProyecto === 'CANCELADO';
 
     const getEstadoBadgeColor = (estado) => {
         switch (estado?.toUpperCase()) {
@@ -90,16 +98,20 @@ export default function ProyectoCardPresidente({ proyecto, onVerInscripciones, o
                     <div className="grid grid-cols-2 gap-3">
                         <Button
                             size="xs"
-                            className="bg-primary-600 hover:bg-primary-700 text-white border-none focus:ring-primary-500 transition-colors shadow-lg shadow-primary-600/20"
+                            className="bg-primary-600 hover:bg-primary-700 text-white border-none focus:ring-primary-500 transition-colors shadow-lg shadow-primary-600/20 disabled:opacity-50 disabled:cursor-not-allowed"
                             onClick={() => onVerInscripciones(proyecto)}
+                            disabled={isCancelado}
+                            title={isCancelado ? 'No se pueden ver inscripciones de un proyecto cancelado' : 'Ver inscripciones'}
                         >
                             Inscripciones
                         </Button>
                         <Button
                             size="xs"
                             color="dark"
-                            className="bg-neutral-800 hover:bg-neutral-700 text-white border-neutral-700 transition-colors"
+                            className="bg-neutral-800 hover:bg-neutral-700 text-white border-neutral-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                             onClick={() => onAsistencia(proyecto)}
+                            disabled={isCancelado}
+                            title={isCancelado ? 'No se puede gestionar asistencia de un proyecto cancelado' : 'Gestionar asistencia'}
                         >
                             Asistencia
                         </Button>
@@ -110,11 +122,13 @@ export default function ProyectoCardPresidente({ proyecto, onVerInscripciones, o
                         size="sm"
                         className="w-full bg-neutral-800 hover:bg-neutral-700 text-white border-neutral-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         onClick={() => onEditar(proyecto)}
-                        disabled={proyecto.estadoProyecto === 'FINALIZADO' || proyecto.estadoProyecto === 'EN_EJECUCION'}
+                        disabled={proyecto.estadoProyecto === 'FINALIZADO' || proyecto.estadoProyecto === 'EN_EJECUCION' || isCancelado}
                         title={
-                            proyecto.estadoProyecto === 'FINALIZADO' || proyecto.estadoProyecto === 'EN_EJECUCION'
-                                ? 'No se puede editar un proyecto finalizado o en ejecución'
-                                : 'Editar proyecto'
+                            isCancelado
+                                ? 'No se puede editar un proyecto cancelado'
+                                : proyecto.estadoProyecto === 'FINALIZADO' || proyecto.estadoProyecto === 'EN_EJECUCION'
+                                    ? 'No se puede editar un proyecto finalizado o en ejecución'
+                                    : 'Editar proyecto'
                         }
                     >
                         <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -122,6 +136,15 @@ export default function ProyectoCardPresidente({ proyecto, onVerInscripciones, o
                         </svg>
                         Editar Proyecto
                     </Button>
+
+                    {onCancelar && CancelButton && !isCancelado && (
+                        <CancelButton
+                            onConfirm={() => onCancelar(proyecto.id)}
+                            titulo={proyecto.titulo}
+                            descripcion="Esta acción cancelará permanentemente el proyecto."
+                            buttonText="Cancelar Proyecto"
+                        />
+                    )}
                 </div>
             </div>
         </div>
@@ -132,5 +155,7 @@ ProyectoCardPresidente.propTypes = {
     proyecto: PropTypes.object.isRequired,
     onVerInscripciones: PropTypes.func.isRequired,
     onEditar: PropTypes.func.isRequired,
-    onAsistencia: PropTypes.func.isRequired
+    onAsistencia: PropTypes.func.isRequired,
+    onCancelar: PropTypes.func,
+    CancelButton: PropTypes.elementType,
 };

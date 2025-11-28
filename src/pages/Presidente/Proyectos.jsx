@@ -3,11 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import { Pagination, TextInput, Button, Spinner } from 'flowbite-react';
 import { motion } from 'framer-motion';
 import { HiSearch, HiPlus } from 'react-icons/hi';
+import Swal from 'sweetalert2';
+import { post } from '../../services/fetchClient';
 import useFetchProyectosPresidente from '../../hooks/useFetchProyectosPresidente';
 import ProyectoDetailsModal from '../../components/ProyectoDetailsModal';
 import InscripcionesProyectoModal from '../../components/InscripcionesProyectoModal';
 import EditarProyectoModal from '../../components/EditarProyectoModal';
 import ProyectoCardPresidente from '../../components/ProyectoCardPresidente';
+import ConfirmarCancelacionButton from '../../components/ConfirmarCancelacionButton';
 
 /**
  * Proyectos Page - President Module
@@ -49,6 +52,34 @@ export default function Proyectos() {
 
     const handleProyectoUpdated = () => {
         refetch();
+    };
+
+    const cancelarProyecto = async (id) => {
+        try {
+            const response = await post(`/api/v1/proyectos/${id}/cancelar`, {});
+
+            await Swal.fire({
+                icon: 'success',
+                title: 'Proyecto cancelado',
+                text: typeof response === 'string' ? response : 'El proyecto ha sido cancelado exitosamente.',
+                confirmButtonColor: '#8C1D40',
+                background: '#171717',
+                color: '#ffffff',
+                timer: 5000
+            });
+
+            refetch();
+        } catch (error) {
+            await Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: error.message || 'No se pudo cancelar el proyecto.',
+                confirmButtonColor: '#dc2626',
+                background: '#171717',
+                color: '#ffffff'
+            });
+            throw error;
+        }
     };
 
     const getEstadoBadgeColor = (estado) => {
@@ -164,9 +195,12 @@ export default function Proyectos() {
                                 <motion.div key={proyecto.id} variants={itemVariants}>
                                     <ProyectoCardPresidente
                                         proyecto={proyecto}
+                                        onVerDetalles={() => openModal(setDetailsModalOpen, proyecto)}
                                         onVerInscripciones={() => openModal(setInscripcionesModalOpen, proyecto)}
                                         onEditar={() => openModal(setEditModalOpen, proyecto)}
                                         onAsistencia={() => navigate(`/presidente/proyectos/${proyecto.id}/asistencia`)}
+                                        onCancelar={() => cancelarProyecto(proyecto.id)}
+                                        CancelButton={ConfirmarCancelacionButton}
                                     />
                                 </motion.div>
                             ))}

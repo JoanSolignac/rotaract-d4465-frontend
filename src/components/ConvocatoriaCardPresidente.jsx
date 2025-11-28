@@ -7,10 +7,17 @@ import PropTypes from 'prop-types';
  * Card component adapted for President role
  * Shows Edit and Ver Inscripciones buttons instead of Postular
  */
-export default function ConvocatoriaCardPresidente({ convocatoria, onVerInscripciones, onEditar }) {
+export default function ConvocatoriaCardPresidente({
+    convocatoria,
+    onVerInscripciones,
+    onEditar,
+    onCancelar,
+    CancelButton
+}) {
     const inscritos = convocatoria?.inscritos ?? 0;
     const cupoMaximo = convocatoria?.cupoMaximo ?? 0;
     const cuposCompletos = inscritos >= cupoMaximo;
+    const isCancelada = convocatoria?.estado === 'CANCELADA';
 
     const getEstadoBadgeColor = (estado) => {
         switch (estado?.toUpperCase()) {
@@ -89,8 +96,10 @@ export default function ConvocatoriaCardPresidente({ convocatoria, onVerInscripc
                 <div className="flex flex-col gap-3 mt-auto">
                     <Button
                         size="sm"
-                        className="w-full bg-primary-600 hover:bg-primary-700 text-white border-none focus:ring-primary-500 transition-colors shadow-lg shadow-primary-600/20"
+                        className="w-full bg-primary-600 hover:bg-primary-700 text-white border-none focus:ring-primary-500 transition-colors shadow-lg shadow-primary-600/20 disabled:opacity-50 disabled:cursor-not-allowed"
                         onClick={() => onVerInscripciones(convocatoria)}
+                        disabled={isCancelada}
+                        title={isCancelada ? 'No se pueden ver inscripciones de una convocatoria cancelada' : 'Ver inscripciones'}
                     >
                         <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -101,14 +110,25 @@ export default function ConvocatoriaCardPresidente({ convocatoria, onVerInscripc
                     <Button
                         color="light"
                         size="sm"
-                        className="w-full bg-neutral-800 hover:bg-neutral-700 text-white border-neutral-700 transition-colors"
+                        className="w-full bg-neutral-800 hover:bg-neutral-700 text-white border-neutral-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         onClick={() => onEditar(convocatoria)}
+                        disabled={isCancelada}
+                        title={isCancelada ? 'No se puede editar una convocatoria cancelada' : 'Editar convocatoria'}
                     >
                         <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                         </svg>
                         Editar Convocatoria
                     </Button>
+
+                    {onCancelar && CancelButton && !isCancelada && (
+                        <CancelButton
+                            onConfirm={() => onCancelar(convocatoria.id)}
+                            titulo={convocatoria.titulo}
+                            descripcion="Esta acción cancelará permanentemente la convocatoria."
+                            buttonText="Cancelar Convocatoria"
+                        />
+                    )}
                 </div>
             </div>
         </div>
@@ -119,4 +139,6 @@ ConvocatoriaCardPresidente.propTypes = {
     convocatoria: PropTypes.object.isRequired,
     onVerInscripciones: PropTypes.func.isRequired,
     onEditar: PropTypes.func.isRequired,
+    onCancelar: PropTypes.func,
+    CancelButton: PropTypes.elementType,
 };

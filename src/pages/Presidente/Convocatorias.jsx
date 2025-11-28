@@ -3,10 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { Pagination, Spinner, TextInput, Button } from 'flowbite-react';
 import { HiSearch, HiPlus } from 'react-icons/hi';
 import { motion } from 'framer-motion';
+import Swal from 'sweetalert2';
+import { fetchJson } from '../../services/fetchClient';
 import useFetchConvocatoriasPresidente from '../../hooks/useFetchConvocatoriasPresidente';
 import ConvocatoriaCardPresidente from '../../components/ConvocatoriaCardPresidente';
 import InscripcionesModal from '../../components/InscripcionesModal';
 import EditarConvocatoriaModal from '../../components/EditarConvocatoriaModal';
+import ConfirmarCancelacionButton from '../../components/ConfirmarCancelacionButton';
 
 /**
  * Convocatorias Page - President Module
@@ -53,6 +56,36 @@ export default function Convocatorias() {
 
     const handleConvocatoriaUpdated = () => {
         refetch();
+    };
+
+    const cancelarConvocatoria = async (id) => {
+        try {
+            const response = await fetchJson(`/api/v1/convocatorias/${id}/cancelar`, {
+                method: 'DELETE'
+            });
+
+            await Swal.fire({
+                icon: 'success',
+                title: 'Convocatoria cancelada',
+                text: typeof response === 'string' ? response : 'La convocatoria ha sido cancelada exitosamente.',
+                confirmButtonColor: '#8C1D40',
+                background: '#171717',
+                color: '#ffffff',
+                timer: 5000
+            });
+
+            refetch();
+        } catch (error) {
+            await Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: error.message || 'No se pudo cancelar la convocatoria. Verifica que no tenga inscritos.',
+                confirmButtonColor: '#dc2626',
+                background: '#171717',
+                color: '#ffffff'
+            });
+            throw error;
+        }
     };
 
     // Animation variants
@@ -181,6 +214,8 @@ export default function Convocatorias() {
                                         convocatoria={convocatoria}
                                         onVerInscripciones={handleVerInscripciones}
                                         onEditar={handleEditar}
+                                        onCancelar={() => cancelarConvocatoria(convocatoria.id)}
+                                        CancelButton={ConfirmarCancelacionButton}
                                     />
                                 </motion.div>
                             ))}

@@ -65,6 +65,7 @@ export default function SocioNavbar() {
         { path: '/socio', label: 'Inicio' },
         { path: '/socio/proyectos', label: 'Proyectos Disponibles' },
         { path: '/socio/inscripciones', label: 'Mis Inscripciones' },
+        { path: '/socio/historial-asistencias', label: 'Historial de Asistencias' },
     ];
 
     return (

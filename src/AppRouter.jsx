@@ -32,6 +32,7 @@ import SocioLayout from './layouts/SocioLayout';
 import SocioInicio from './pages/Socio/Inicio';
 import SocioProyectos from './pages/Socio/Proyectos';
 import SocioInscripciones from './pages/Socio/Inscripciones';
+import HistorialAsistenciasPage from './pages/Socio/HistorialAsistenciasPage';
 
 // Representante Module Imports
 import RepresentanteLayout from './layouts/RepresentanteLayout';
@@ -87,6 +88,7 @@ export default function AppRouter() {
                     <Route index element={<SocioInicio />} />
                     <Route path="proyectos" element={<SocioProyectos />} />
                     <Route path="inscripciones" element={<SocioInscripciones />} />
+                    <Route path="historial-asistencias" element={<HistorialAsistenciasPage />} />
                 </Route>
 
                 {/* Representante Routes */}

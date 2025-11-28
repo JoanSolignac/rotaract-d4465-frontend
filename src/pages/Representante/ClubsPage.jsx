@@ -2,9 +2,11 @@ import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Spinner, TextInput, Select, Button, Table } from 'flowbite-react';
-import { HiSearch, HiFilter, HiPlus, HiEye, HiCheckCircle, HiXCircle } from 'react-icons/hi';
+import { HiSearch, HiFilter, HiPlus, HiEye, HiCheckCircle, HiXCircle, HiBell, HiX } from 'react-icons/hi';
 import Swal from 'sweetalert2';
 import { patch } from '../../services/fetchClient';
+// import DesactivarClubButton from '../../components/DesactivarClubButton';
+// import useNotifications from '../../hooks/useNotifications';
 
 /**
  * ClubsPage Component for District Representative
@@ -16,6 +18,11 @@ export default function ClubsPage() {
     const [error, setError] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedDepartment, setSelectedDepartment] = useState('');
+
+    // WebSocket notifications - TEMPORARILY DISABLED
+    // const { notifications, connected } = useNotifications();
+    const notifications = [];
+    const connected = false;
 
     useEffect(() => {
         fetchClubs();
@@ -62,83 +69,6 @@ export default function ClubsPage() {
         });
     }, [clubs, searchQuery, selectedDepartment]);
 
-    const handleDeactivateClick = (club) => {
-        let timerInterval;
-        let countdown = 10;
-
-        Swal.fire({
-            title: `¿Desactivar ${club.nombre}?`,
-            html: `
-                <p class="text-gray-300 mb-4">Esta acción afectará a todos sus miembros.</p>
-                <p class="text-yellow-400 font-bold">Podrás confirmar en: <span id="countdown">${countdown}</span> segundos</p>
-            `,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Confirmar',
-            cancelButtonText: 'Cancelar',
-            confirmButtonColor: '#8C1D40',
-            cancelButtonColor: '#6B7280',
-            background: '#171717',
-            color: '#ffffff',
-            didOpen: () => {
-                const confirmButton = Swal.getConfirmButton();
-                confirmButton.disabled = true;
-                confirmButton.style.opacity = '0.5';
-                confirmButton.style.cursor = 'not-allowed';
-
-                timerInterval = setInterval(() => {
-                    countdown--;
-                    const countdownElement = document.getElementById('countdown');
-                    if (countdownElement) {
-                        countdownElement.textContent = countdown;
-                    }
-
-                    if (countdown <= 0) {
-                        clearInterval(timerInterval);
-                        confirmButton.disabled = false;
-                        confirmButton.style.opacity = '1';
-                        confirmButton.style.cursor = 'pointer';
-                        const htmlContent = Swal.getHtmlContainer();
-                        if (htmlContent) {
-                            htmlContent.querySelector('p:last-child').innerHTML =
-                                '<span class="text-green-400 font-bold">✓ Puedes confirmar ahora</span>';
-                        }
-                    }
-                }, 1000);
-            },
-            willClose: () => {
-                clearInterval(timerInterval);
-            }
-        }).then(async (result) => {
-            if (result.isConfirmed) {
-                try {
-                    await patch(`/clubs/deactivate/${club.id}`, {});
-
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Club desactivado',
-                        text: `${club.nombre} ha sido desactivado exitosamente.`,
-                        confirmButtonColor: '#8C1D40',
-                        background: '#171717',
-                        color: '#ffffff'
-                    });
-
-                    // Refresh clubs list
-                    fetchClubs();
-                } catch (err) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: err.message || 'No se pudo desactivar el club',
-                        confirmButtonColor: '#E51A4C',
-                        background: '#171717',
-                        color: '#ffffff'
-                    });
-                }
-            }
-        });
-    };
-
     const handleActivateClick = async (club) => {
         const result = await Swal.fire({
             title: `¿Activar ${club.nombre}?`,
@@ -184,6 +114,42 @@ export default function ClubsPage() {
     return (
         <div className="min-h-screen bg-[#050506] pt-24 pb-12 px-4">
             <div className="max-w-screen-xl mx-auto">
+                {/* WebSocket Notifications */}
+                <div className="fixed top-20 right-4 z-50 space-y-2 max-w-sm">
+                    {notifications.slice(0, 3).map((notification, index) => (
+                        <motion.div
+                            key={index}
+                            initial={{ opacity: 0, x: 100 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: 100 }}
+                            className="flex items-start gap-3 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700"
+                        >
+                            <div className="flex-shrink-0 inline-flex h-8 w-8 items-center justify-center rounded-lg bg-cyan-100 text-cyan-500 dark:bg-cyan-800 dark:text-cyan-200">
+                                <HiBell className="h-5 w-5" />
+                            </div>
+                            <div className="flex-1 text-sm">
+                                <span className="block mb-1 text-sm font-semibold text-gray-900 dark:text-white">
+                                    {notification.titulo}
+                                </span>
+                                <div className="text-sm text-gray-500 dark:text-gray-400">
+                                    {notification.mensaje}
+                                </div>
+                            </div>
+                            <button
+                                type="button"
+                                className="ml-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700"
+                                onClick={() => {
+                                    // Remove notification
+                                    const newNotifications = [...notifications];
+                                    newNotifications.splice(index, 1);
+                                }}
+                            >
+                                <HiX className="w-5 h-5" />
+                            </button>
+                        </motion.div>
+                    ))}
+                </div>
+
                 {/* Header */}
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
                     <div>
@@ -192,6 +158,12 @@ export default function ClubsPage() {
                         </h1>
                         <p className="text-gray-400">
                             Administra los clubes del Distrito 4465
+                            {connected && (
+                                <span className="ml-2 inline-flex items-center text-xs text-green-400">
+                                    <span className="w-2 h-2 bg-green-400 rounded-full mr-1 animate-pulse"></span>
+                                    Conectado
+                                </span>
+                            )}
                         </p>
                     </div>
                     <Link to="/representante/clubes/crear">
@@ -324,7 +296,26 @@ export default function ClubsPage() {
                                                                 <Button
                                                                     size="xs"
                                                                     color="failure"
-                                                                    onClick={() => handleDeactivateClick(club)}
+                                                                    onClick={() => {
+                                                                        Swal.fire({
+                                                                            title: `¿Desactivar ${club.nombre}?`,
+                                                                            text: 'Esta acción desactivará el club.',
+                                                                            icon: 'warning',
+                                                                            showCancelButton: true,
+                                                                            confirmButtonText: 'Desactivar',
+                                                                            confirmButtonColor: '#dc2626'
+                                                                        }).then(async (result) => {
+                                                                            if (result.isConfirmed) {
+                                                                                try {
+                                                                                    await patch(`/clubs/deactivate/${club.id}`, {});
+                                                                                    Swal.fire('¡Desactivado!', 'El club ha sido desactivado.', 'success');
+                                                                                    fetchClubs();
+                                                                                } catch (err) {
+                                                                                    Swal.fire('Error', err.message, 'error');
+                                                                                }
+                                                                            }
+                                                                        });
+                                                                    }}
                                                                 >
                                                                     Desactivar
                                                                 </Button>

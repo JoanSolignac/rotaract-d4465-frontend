@@ -31,7 +31,7 @@ export default function ProyectoCardPresidente({ proyecto, onVerInscripciones, o
         <div className="bg-neutral-900 rounded-2xl p-6 shadow-lg shadow-black/20 border border-neutral-800 hover:border-primary-600/50 transition-all duration-300 h-full flex flex-col group">
             <div className="flex flex-col h-full">
                 {/* Title */}
-                <h3 className="text-lg md:text-xl font-bold text-white mb-3 leading-tight line-clamp-2 min-h-[3.5rem] group-hover:text-primary-400 transition-colors">
+                <h3 className="text-lg md:text-xl font-bold text-white mb-3 leading-tight group-hover:text-primary-400 transition-colors">
                     {proyecto.titulo}
                 </h3>
 
@@ -110,6 +110,7 @@ export default function ProyectoCardPresidente({ proyecto, onVerInscripciones, o
                         size="sm"
                         className="w-full bg-neutral-800 hover:bg-neutral-700 text-white border-neutral-700 transition-colors"
                         onClick={() => onEditar(proyecto)}
+                        disabled={false}
                     >
                         <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />

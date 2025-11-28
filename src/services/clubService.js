@@ -26,3 +26,12 @@ export async function getClubPublic(id) {
 export async function updateClub(id, data) {
     return patch(`/api/v1/clubs/${id}`, data);
 }
+
+/**
+ * Deactivate a club
+ * @param {number} id - Club ID
+ * @returns {Promise<object>} Response data
+ */
+export async function deactivateClub(id) {
+    return patch(`/api/v1/clubs/deactivate/${id}`);
+}

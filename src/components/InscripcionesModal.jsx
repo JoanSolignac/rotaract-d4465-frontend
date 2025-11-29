@@ -280,29 +280,29 @@ export default function InscripcionesModal({ isOpen, onClose, convocatoria }) {
                                             </Table.Cell>
                                             <Table.Cell className="text-right">
                                                 <div className="flex justify-end gap-2">
-                                                    {(inscripcion.estado === 'PENDIENTE' || inscripcion.estado === 'RECHAZADO' || inscripcion.estado === 'RECHAZADA') && (
-                                                        <Button
-                                                            size="xs"
-                                                            color="success"
-                                                            className="text-white px-2 py-1"
-                                                            onClick={() => handleAccion(inscripcion.id, 'aceptar')}
-                                                            disabled={processingId === inscripcion.id}
-                                                            isProcessing={processingId === inscripcion.id}
-                                                        >
-                                                            Aceptar
-                                                        </Button>
-                                                    )}
-                                                    {(inscripcion.estado === 'PENDIENTE' || inscripcion.estado === 'ACEPTADA' || inscripcion.estado === 'APROBADO') && (
-                                                        <Button
-                                                            size="xs"
-                                                            color="failure"
-                                                            className="text-white px-2 py-1"
-                                                            onClick={() => handleAccion(inscripcion.id, 'rechazar')}
-                                                            disabled={processingId === inscripcion.id}
-                                                            isProcessing={processingId === inscripcion.id}
-                                                        >
-                                                            Rechazar
-                                                        </Button>
+                                                    {inscripcion.estado === 'PENDIENTE' && (
+                                                        <>
+                                                            <Button
+                                                                size="xs"
+                                                                color="success"
+                                                                className="text-white px-2 py-1"
+                                                                onClick={() => handleAccion(inscripcion.id, 'aceptar')}
+                                                                disabled={processingId === inscripcion.id}
+                                                                isProcessing={processingId === inscripcion.id}
+                                                            >
+                                                                Aceptar
+                                                            </Button>
+                                                            <Button
+                                                                size="xs"
+                                                                color="failure"
+                                                                className="text-white px-2 py-1"
+                                                                onClick={() => handleAccion(inscripcion.id, 'rechazar')}
+                                                                disabled={processingId === inscripcion.id}
+                                                                isProcessing={processingId === inscripcion.id}
+                                                            >
+                                                                Rechazar
+                                                            </Button>
+                                                        </>
                                                     )}
                                                 </div>
                                             </Table.Cell>

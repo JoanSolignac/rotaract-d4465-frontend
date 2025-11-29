@@ -98,10 +98,13 @@ export function WebSocketProvider({ children, user }) {
 
         // STRICT DETECTION: Check if tipo is exactly "CAMBIO_ROL"
         // Also check if the message itself is just "CAMBIO_ROL" (plain string case)
+        // AND check for specific text seen in the user's screenshot
         const isRoleChange =
             notification.tipo === 'CAMBIO_ROL' ||
             notification.mensaje === 'CAMBIO_ROL' ||
-            (typeof notification === 'string' && notification.includes('CAMBIO_ROL'));
+            (typeof notification === 'string' && notification.includes('CAMBIO_ROL')) ||
+            (notification.titulo && notification.titulo.toLowerCase().includes('nueva presidencia asignada')) ||
+            (notification.mensaje && notification.mensaje.toLowerCase().includes('ahora es presidente'));
 
         if (isRoleChange) {
             console.log('🔒 CAMBIO_ROL detectado - Iniciando protocolo de seguridad');

@@ -9,9 +9,42 @@
  * @returns {Date} Local date object
  */
 export function parseLocalDate(dateString) {
-    if (!dateString) return "";
-    const [year, month, day] = dateString.split("-").map(Number);
-    return new Date(year, month - 1, day);
+    if (!dateString) return new Date(); // Return current date as fallback if null/undefined
+
+    try {
+        // Handle array format [yyyy, MM, dd, HH, mm, ss] (Spring Boot default)
+        if (Array.isArray(dateString)) {
+            const [year, month, day] = dateString;
+            // Ensure components are valid numbers
+            if (typeof year === 'number' && typeof month === 'number' && typeof day === 'number') {
+                const date = new Date(year, month - 1, day);
+                if (!isNaN(date.getTime())) return date;
+            }
+        }
+
+        // Handle ISO string or standard string
+        if (typeof dateString === 'string') {
+            // Try standard parsing first
+            const date = new Date(dateString);
+            if (!isNaN(date.getTime())) {
+                return date;
+            }
+
+            // Fallback for "yyyy-MM-dd" if standard parsing fails
+            const parts = dateString.split("-");
+            if (parts.length === 3) {
+                const [year, month, day] = parts.map(Number);
+                if (!isNaN(year) && !isNaN(month) && !isNaN(day)) {
+                    const date = new Date(year, month - 1, day);
+                    if (!isNaN(date.getTime())) return date;
+                }
+            }
+        }
+    } catch (error) {
+        console.warn("Error parsing date:", dateString, error);
+    }
+
+    return new Date(); // Fallback to current date
 }
 
 /**

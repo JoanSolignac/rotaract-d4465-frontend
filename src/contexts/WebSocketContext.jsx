@@ -97,11 +97,17 @@ export function WebSocketProvider({ children, user }) {
         // console.log('📩 Notificación recibida:', notification); // Reduced noise
 
         // STRICT DETECTION: Check if tipo is exactly "CAMBIO_ROL"
-        if (notification.tipo === 'CAMBIO_ROL') {
+        // Also check if the message itself is just "CAMBIO_ROL" (plain string case)
+        const isRoleChange =
+            notification.tipo === 'CAMBIO_ROL' ||
+            notification.mensaje === 'CAMBIO_ROL' ||
+            (typeof notification === 'string' && notification.includes('CAMBIO_ROL'));
+
+        if (isRoleChange) {
             console.log('🔒 CAMBIO_ROL detectado - Iniciando protocolo de seguridad');
             forceLogout(
                 notification.titulo || '¡Cambio de Rol!',
-                notification.mensaje || 'Tu rol ha sido actualizado'
+                notification.mensaje === 'CAMBIO_ROL' ? 'Tu rol ha sido actualizado.' : (notification.mensaje || 'Tu rol ha sido actualizado')
             );
             return; // Don't add to notifications list
         }
